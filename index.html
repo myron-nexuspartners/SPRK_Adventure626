@@ -55,7 +55,18 @@ nav{position:sticky;top:0;z-index:50;background:rgba(245,240,235,.92);backdrop-f
 .cta-pill:hover{background:var(--navy);transform:translateY(-2px)}
 .cta-pill.ember{background:var(--ember)}
 .cta-pill.ember:hover{background:#E55A2B}
-@media(max-width:1080px){.nav-links{display:none}}
+.menu-btn{display:none;background:none;border:0;cursor:pointer;padding:8px;flex-shrink:0}
+.menu-btn span{display:block;width:22px;height:2.5px;background:var(--ink);margin:4.5px 0;border-radius:2px;transition:transform .25s var(--ease),opacity .2s}
+@media(max-width:1080px){
+  .menu-btn{display:block}
+  .nav-links{display:none;position:absolute;top:64px;left:0;right:0;background:rgba(245,240,235,.98);backdrop-filter:blur(10px);flex-direction:column;gap:0;padding:6px 24px 14px;border-bottom:1px solid rgba(10,10,15,.1);box-shadow:0 14px 28px rgba(10,10,15,.1)}
+  nav.open .nav-links{display:flex}
+  .nav-links a{padding:13px 2px;font-size:15px;border-bottom:1px solid rgba(10,10,15,.06)}
+  .nav-links a:last-child{border-bottom:0}
+  nav.open .menu-btn span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  nav.open .menu-btn span:nth-child(2){opacity:0}
+  nav.open .menu-btn span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+}
 
 /* ---------- hero ---------- */
 .hero{padding:64px 0 84px}
@@ -255,6 +266,7 @@ footer{padding:42px 0 54px;border-top:1px solid rgba(10,10,15,.08)}
       <a href="#model">The Model</a>
       <a href="#contact">The Ask</a>
     </div>
+    <button class="menu-btn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
     <a class="cta-pill ember" href="https://yoursprk-creator-beta.netlify.app/" rel="noopener">Join the Beta →</a>
   </div>
 </nav>
@@ -540,6 +552,9 @@ footer{padding:42px 0 54px;border-top:1px solid rgba(10,10,15,.08)}
     fr.addEventListener('click',function(){v.paused?play():stop();});
     v.addEventListener('ended',stop);
   });
+  var nv=document.querySelector('nav'),mb=document.querySelector('.menu-btn');
+  if(mb){mb.addEventListener('click',function(){var o=nv.classList.toggle('open');mb.setAttribute('aria-expanded',o);mb.setAttribute('aria-label',o?'Close menu':'Open menu');});
+    document.querySelectorAll('.nav-links a').forEach(function(a){a.addEventListener('click',function(){nv.classList.remove('open');mb.setAttribute('aria-expanded','false');});});}
   var hv=document.querySelector('.herovid');
   if(hv){var tryPlay=function(){hv.play().catch(function(){})};tryPlay();document.addEventListener('click',tryPlay,{once:true});}
 })();
