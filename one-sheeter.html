@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet"/>
+<style>
+@page{size:letter portrait;margin:0}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Bricolage Grotesque',system-ui,sans-serif;background:#fff;color:#0A0A0F;font-size:7.5pt;line-height:1.45;width:8.5in;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+a{text-decoration:none}
+.ribbon{background:#0A0A0F;color:#fff;text-align:center;padding:4pt 0;font-size:6.5pt;font-weight:600;letter-spacing:.06em;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.ribbon .rib-label{color:rgba(255,255,255,.45);margin-right:8pt}
+.ribbon a{color:rgba(255,255,255,.7);margin:0 7pt}
+.ribbon a.hot{color:#FF6B35;font-weight:800}
+.header{display:flex;align-items:center;justify-content:space-between;padding:9pt 24pt 8pt;border-bottom:1pt solid rgba(10,10,15,.12)}
+.brand{display:flex;align-items:center;gap:8pt}
+.brand-icon{width:28pt;height:28pt;border-radius:7pt;overflow:hidden;flex-shrink:0}
+.brand-icon img{width:100%;height:100%}
+.brand-text{}
+.wordmark{font-size:17pt;font-weight:900;letter-spacing:-.03em;line-height:1}
+.wordmark sup{color:#E8003D;font-size:.65em;vertical-align:super}
+.tagline{font-size:6.5pt;color:#4A5278;margin-top:2pt}
+.tagline em{color:#FF6B35;font-style:normal;font-weight:700}
+.header-right{text-align:right}
+.conf{font-size:5.5pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8E7A8A;margin-bottom:3pt}
+.badge{display:inline-block;background:#0A0A0F;color:#fff;font-size:7.5pt;font-weight:800;padding:3pt 10pt;border-radius:100pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.badge em{color:#FF6B35;font-style:normal}
+.proto-band{background:#0A0A0F;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.proto-band img{width:100%;height:155pt;object-fit:cover;object-position:center top;display:block}
+.prob-sol{padding:9pt 24pt 8pt;background:#fff}
+.prob-eyebrow{font-size:6.5pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#FF6B35;margin-bottom:5pt}
+.prob-eyebrow::before{content:"✳  "}
+.prob-headline{font-size:13pt;font-weight:800;letter-spacing:-.02em;line-height:1.15;margin-bottom:8pt}
+.prob-cards{display:flex;gap:5pt}
+.prob-card{flex:1;background:#1E2235;border-radius:7pt;padding:7pt 8pt;color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.prob-card-label{font-size:5.5pt;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#FF6B35;margin-bottom:3pt}
+.prob-card-title{font-size:8.5pt;font-weight:800;line-height:1.15;margin-bottom:3pt}
+.prob-card-body{font-size:6pt;color:rgba(255,255,255,.7);line-height:1.4}
+.prob-card-body b{color:#fff}
+.traction-wrap{padding:7pt 24pt;background:#F5F0EB;border-top:1pt solid rgba(10,10,15,.07);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.sec-lbl{font-size:6pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#4A5278;margin-bottom:5pt}
+.traction{display:flex;gap:5pt;margin-bottom:4pt}
+.tstat{flex:1;background:#fff;border-radius:5pt;padding:5pt 7pt;border:1pt solid rgba(10,10,15,.08)}
+.tstat-n{font-size:10pt;font-weight:900;letter-spacing:-.02em;color:#E8003D;line-height:1;margin-bottom:2pt}
+.tstat-l{font-size:5.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#4A5278;line-height:1.3}
+.traction-note{font-size:6pt;color:#4A5278;line-height:1.4}
+.traction-note strong{color:#0A0A0F}
+.moat-fin{display:flex;gap:0;padding:7pt 24pt;background:#fff;border-top:1pt solid rgba(10,10,15,.07)}
+.moat-col{flex:0 0 44%;padding-right:14pt;border-right:1pt solid rgba(10,10,15,.08)}
+.fin-col{flex:1;padding-left:14pt}
+.col-lbl{font-size:6pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#E8003D;margin-bottom:5pt}
+.moat-item{margin-bottom:4pt;padding-bottom:4pt;border-bottom:1pt solid rgba(10,10,15,.06);font-size:6.5pt;line-height:1.4}
+.moat-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.moat-item em{font-style:normal;color:#E8003D;font-weight:700}
+.fin-table{width:100%;border-collapse:collapse;font-size:6.5pt}
+.fin-table th{font-size:5.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#4A5278;padding:0 0 3pt 0;text-align:left;border-bottom:1pt solid rgba(10,10,15,.12)}
+.fin-table th:not(:first-child){text-align:right}
+.fin-table td{padding:3pt 0;border-bottom:1pt solid rgba(10,10,15,.06);font-weight:600}
+.fin-table td:not(:first-child){text-align:right;font-weight:700}
+.fin-table tr:last-child td{border-bottom:none}
+.fin-table .red{color:#E8003D;font-weight:800}
+.fin-note{font-size:5.5pt;color:#8E7A8A;line-height:1.4;margin-top:4pt}
+.ask-wrap{padding:6pt 24pt;background:#F5F0EB;border-top:1pt solid rgba(10,10,15,.07);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.ask-lbl{font-size:6pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#E8003D;margin-bottom:2pt}
+.ask-sub{font-size:6.5pt;color:#4A5278;line-height:1.4;margin-bottom:5pt}
+.alloc-label{font-size:5.5pt;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#4A5278;margin-bottom:3pt}
+.alloc-bar{display:flex;gap:2pt;border-radius:5pt;overflow:hidden;height:16pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.alloc-bar div{display:flex;align-items:center;justify-content:center;font-size:7pt;font-weight:800;color:#fff}
+.alloc-bar .b1{flex:35;background:#0A0A0F}
+.alloc-bar .b2{flex:20;background:#E8003D}
+.alloc-bar .b3{flex:20;background:#4A5278}
+.alloc-bar .b4{flex:15;background:#8E7A8A}
+.alloc-bar .b5{flex:10;background:#C4A09A;color:#0A0A0F}
+.alloc-lbls{display:flex;gap:2pt;margin-top:3pt}
+.alloc-lbls div{font-size:5.5pt;color:#4A5278;font-weight:600}
+.roadmap-wrap{padding:6pt 24pt;background:#fff;border-top:1pt solid rgba(10,10,15,.07)}
+.road-cols{display:flex;gap:0}
+.road-col{flex:1;padding:0 8pt 0 0;border-right:1pt solid rgba(10,10,15,.08)}
+.road-col:not(:first-child){padding-left:8pt}
+.road-col:last-child{border-right:none;padding-right:0}
+.road-when{font-size:5.5pt;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#E8003D;margin-bottom:2pt}
+.road-title{font-size:7pt;font-weight:700;margin-bottom:2pt;line-height:1.2}
+.road-body{font-size:6pt;color:#4A5278;line-height:1.35}
+.founder-wrap{padding:6pt 24pt 5pt;background:#F5F0EB;border-top:1pt solid rgba(10,10,15,.07);display:flex;gap:14pt;align-items:flex-start;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.founder-bio{flex:1.6}
+.founder-sig{flex:1;text-align:right}
+.founder-lbl{font-size:6pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#4A5278;margin-bottom:3pt}
+.founder-bio p{font-size:6.5pt;line-height:1.45;color:#0A0A0F}
+.founder-bio p b{font-weight:800}
+.sig-name{font-size:9pt;font-weight:800;letter-spacing:-.01em;margin-bottom:2pt}
+.sig-title{font-size:6.5pt;color:#4A5278;margin-bottom:4pt}
+.sig-links{font-size:6pt;line-height:1.7}
+.sig-links a{color:#E8003D;display:block}
+.footer{padding:4pt 24pt;background:#0A0A0F;color:rgba(255,255,255,.4);font-size:5.5pt;display:flex;justify-content:space-between;align-items:center;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+</style>
+</head>
+<body>
+
+<div class="ribbon">
+  <span class="rib-label">SPRK* RAISE ECOSYSTEM:</span>
+  <a class="hot" href="assets/SPRK-One-Sheeter.pdf">One-Sheeter</a>
+  <a href="https://sprkprototype222.netlify.app/">Live Prototype</a>
+  <a href="https://yoursprk-creator-beta.netlify.app/">Beta Signup</a>
+  <a href="https://calendar.google.com/appointments/schedules/AcZssZ1V2JM1p_sUURytv9EDjFPzBiQdSmTtJKrTuxiwWzjh9PWtzTSYzYbspLHkS-kj2mQ5DpqL9XA3">Book a Meeting</a>
+</div>
+
+<div class="header">
+  <div class="brand">
+    <div class="brand-icon"><img src="assets/sprk-icon.svg" alt="SPRK*"/></div>
+    <div class="brand-text">
+      <div class="wordmark">SPRK<sup>*</sup></div>
+      <div class="tagline">Turning <em>everyday creators</em> into media companies. <em>By design.</em></div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="conf">Confidential — Investor Overview</div>
+    <div class="badge"><em>$4.5M Seed SAFE</em> · Raising Now</div>
+  </div>
+</div>
+
+<div class="proto-band">
+  <img src="assets/proto-composite.jpg" alt="SPRK* product suite"/>
+</div>
+
+<div class="prob-sol">
+  <div class="prob-eyebrow">THE PROBLEM &amp; SOLUTION</div>
+  <div class="prob-headline">The creator economy will be $480B by 2027 despite many structural flaws.</div>
+  <div class="prob-cards">
+    <div class="prob-card">
+      <div class="prob-card-label">Income Inequality</div>
+      <div class="prob-card-title">Predatory Economics</div>
+      <div class="prob-card-body">96% of 50M active creators fail to earn a basic living wage. Leading platforms extract aggressive <b>45% to 70% revenue take-rates.</b></div>
+    </div>
+    <div class="prob-card">
+      <div class="prob-card-label">Ecosystem Fragmentation</div>
+      <div class="prob-card-title">Operational Fatigue</div>
+      <div class="prob-card-body">Everyday makers lose time, margin, and energy across <b>4+ tools.</b> Siloed toolsets force subscription fee stacking and creative churn.</div>
+    </div>
+    <div class="prob-card">
+      <div class="prob-card-label">Value Asset Leakage</div>
+      <div class="prob-card-title">Supply Chain Starvation</div>
+      <div class="prob-card-body">Brands waste billions on opaque <b>agency markups.</b> AI training models are starved for authentic, consented <b>cultural data.</b></div>
+    </div>
+  </div>
+</div>
+
+<div class="traction-wrap">
+  <div class="sec-lbl">Traction &amp; Velocity</div>
+  <div class="traction">
+    <div class="tstat"><div class="tstat-n">$250B→$480B</div><div class="tstat-l">Creator Economy 2024–2027 (Goldman Sachs)</div></div>
+    <div class="tstat"><div class="tstat-n">96%</div><div class="tstat-l">of 50M Creators Not Yet Making a Living</div></div>
+    <div class="tstat"><div class="tstat-n">75–95%*</div><div class="tstat-l">Revenue Stays with the Creator on SPRK</div></div>
+    <div class="tstat"><div class="tstat-n">$48M–$80M</div><div class="tstat-l">SPRK*AI Licensing Upside ARR**</div></div>
+  </div>
+  <div class="traction-note"><strong>45+ founding creators onboarded — via word of mouth alone, zero paid acquisition</strong> — before the beta survey even opened, and sign-ups are growing.</div>
+</div>
+
+<div class="moat-fin">
+  <div class="moat-col">
+    <div class="col-lbl">Competitive Moat</div>
+    <div class="moat-item"><b>1. <em>The Innovator's Dilemma</em></b> — incumbents can't match SPRK's 95% payout without destroying their own margins.</div>
+    <div class="moat-item"><b>2. <em>The Data Moat</em></b> — SPRK*AI trains on consented, revenue-shared cultural data — an invaluable asset as AI regulation tightens.</div>
+    <div class="moat-item"><b>3. <em>The Agency Replacement</em></b> — PAVILION replaces contracting agency layers directly. 4,000+ agency roles cut in Omnicom×IPG restructuring — SPRK*PAVILION steps into the gap.</div>
+  </div>
+  <div class="fin-col">
+    <div class="col-lbl">Financial Projections (Base Case)</div>
+    <table class="fin-table">
+      <thead><tr><th>Metric</th><th>Year 1</th><th>Year 2</th><th>Year 3</th></tr></thead>
+      <tbody>
+        <tr><td>Revenue</td><td>$0.4M</td><td>$2.1M</td><td class="red">$8.3M</td></tr>
+        <tr><td>Paid Creators</td><td>1,200</td><td>4,100</td><td>9,400</td></tr>
+        <tr><td>Monthly Actives</td><td>180K</td><td>720K</td><td>2.1M</td></tr>
+        <tr><td>EBITDA Margin</td><td>—</td><td>—</td><td class="red">24%</td></tr>
+      </tbody>
+    </table>
+    <div class="fin-note">Diversified across 5 revenue lines: SaaS, Brand Subs, Marketplace Fees, Platform Ads, AI Licensing. Optimistic case: $36.6M Year 3 at 46% EBITDA margin. EBITDA-positive at Month 24 on base case. LTV:CAC 6.4× (conservative).</div>
+  </div>
+</div>
+
+<div class="ask-wrap">
+  <div class="ask-lbl">The Ask — $4.5M Seed SAFE</div>
+  <div class="ask-sub">Sized from the model, not from ambition: 1.9× conservative peak cash need, 24+ months of runway, through public launch and into Series A metrics.</div>
+  <div class="alloc-label">$4.5M Raise — Capital Allocation</div>
+  <div class="alloc-bar">
+    <div class="b1">35%</div><div class="b2">20%</div><div class="b3">20%</div><div class="b4">15%</div><div class="b5">10%</div>
+  </div>
+  <div class="alloc-lbls">
+    <div style="flex:35">Product &amp; Eng</div>
+    <div style="flex:20">Sales &amp; Brand</div>
+    <div style="flex:20">Ops &amp; G&amp;A</div>
+    <div style="flex:15">Creator Acq</div>
+    <div style="flex:10">Reserve</div>
+  </div>
+</div>
+
+<div class="roadmap-wrap">
+  <div class="sec-lbl">Roadmap</div>
+  <div class="road-cols">
+    <div class="road-col">
+      <div class="road-when">Now</div>
+      <div class="road-title">Seed Close ($4.5M)</div>
+      <div class="road-body">Engineering partners, AI/ML contractors, and the MVP sprint staged and ready. Plan built to move day one.</div>
+    </div>
+    <div class="road-col">
+      <div class="road-when">Months 1–3</div>
+      <div class="road-title">Founding Cohort &amp; Closed Beta</div>
+      <div class="road-body">45+ founding creators in. Beta survey live. Closed beta validates workflows and documents the economics.</div>
+    </div>
+    <div class="road-col">
+      <div class="road-when">Months 3–5</div>
+      <div class="road-title">PAVILION Soft Launch</div>
+      <div class="road-body">First brand partners onboard white-glove. Case studies in hand; multi-home publishing drives organic creator adoption.</div>
+    </div>
+    <div class="road-col">
+      <div class="road-when">Months 6+</div>
+      <div class="road-title">Public Launch &amp; Series A Build</div>
+      <div class="road-body">Model is default-alive on base-case assumptions. Series A metrics in sight.</div>
+    </div>
+  </div>
+</div>
+
+<div class="founder-wrap">
+  <div class="founder-bio">
+    <div class="founder-lbl">Founder &amp; Team</div>
+    <p><b>Myron King (Founder &amp; CEO)</b> — Two decades building teams and creating campaigns worth hundreds of millions taught me how the creator economy really works. My own family, creators across ages, ethnicities, and platforms, showed me exactly what was missing. That gap is the reason for SPRK. Engineering partners are staged with NDAs and draft contracts, gated only on capital. SPRK Unlimited, Inc. (d/b/a SPRK*) is a Delaware C-Corp. Clean cap table, 100% founder-owned.</p>
+  </div>
+  <div class="founder-sig">
+    <div class="sig-name">Myron King, Founder &amp; CEO</div>
+    <div class="sig-title">SPRK Unlimited, Inc.</div>
+    <div class="sig-links">
+      <a href="mailto:myron.king@yoursprk.com">myron.king@yoursprk.com</a>
+      <a href="https://www.linkedin.com/in/myronking/">linkedin.com/in/myronking</a>
+      <a href="https://myronking-speaks.manus.space/">myronking-speaks.manus.space</a>
+      <a href="https://sprkprototype222.netlify.app/">sprkprototype222.netlify.app</a>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <span>© 2026 SPRK Unlimited, Inc. · Confidential — prepared for prospective partners</span>
+  <span>* Up to 95% on exclusive content &nbsp;·&nbsp; ** AI licensing range estimate</span>
+</div>
+
+</body>
+</html>
