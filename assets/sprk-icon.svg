@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#FF6B35"/>
+      <stop offset="55%"  stop-color="#E8003D"/>
+      <stop offset="100%" stop-color="#CC0055"/>
+    </linearGradient>
+  </defs>
+  <!-- Rounded square -->
+  <rect width="200" height="200" rx="46" fill="url(#g)"/>
+  <!-- Four-pointed star -->
+  <path d="M100 34 C100 67 121 88 154 92 C121 92 100 113 100 146 C100 113 79 92 46 92 C79 92 100 67 100 34 Z" fill="white"/>
+</svg>
