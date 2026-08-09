@@ -489,7 +489,7 @@ section{padding:88px 0}
   gap:20px;
   margin-top:40px;
 }
-@media(max-width:768px){.wins-stat-row{grid-template-columns:1fr}}
+@media(max-width:1024px){.wins-stat-row{grid-template-columns:repeat(2,1fr)}}@media(max-width:640px){.wins-stat-row{grid-template-columns:1fr}}
 .wstat{
   background:rgba(255,255,255,.06);
   border:1px solid rgba(255,255,255,.1);
@@ -611,7 +611,7 @@ footer{padding:42px 0 54px;border-top:1px solid rgba(10,10,15,.08)}
   <!-- Video overlay — positioned by JS over the monitor screen -->
   <div class="hero-screen-overlay" id="heroScreenOverlay">
     <video id="heroVid" autoplay muted loop playsinline preload="auto" poster="assets/hero-poster.jpg">
-      <source src="assets/SPRK_YC_Demo_voiced.mp4" type="video/mp4" />
+      <source src="assets/SPRK_YC_Demo_final.mp4" type="video/mp4" />
     </video>
   </div>
 
@@ -623,7 +623,7 @@ footer{padding:42px 0 54px;border-top:1px solid rgba(10,10,15,.08)}
         <span class="wordmark">SPRK<sup>*</sup></span>
       </div>
       <h1 class="hero-headline">Turning everyday creators into <em>media companies.</em> By design.</h1>
-      <p class="hero-sub">45+ founding creators &nbsp;·&nbsp; 75–95%<sup>*</sup> ad-revenue share &nbsp;·&nbsp; Zero paid acquisition.</p>
+      <p class="hero-sub">45+ founding creators &nbsp;·&nbsp; Up to 95%<sup>*</sup> ad-revenue share &nbsp;·&nbsp; Zero paid acquisition.</p>
     </div>
   </div>
 
@@ -641,7 +641,7 @@ footer{padding:42px 0 54px;border-top:1px solid rgba(10,10,15,.08)}
   <div class="wrap">
     <div class="why-now-head reveal">
       <div class="eyebrow dark">The Problem &amp; Opportunity</div>
-      <h2>The creator economy will be <em style="font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent">$480B by 2027</em> — and still broken for 96% of the people who build it.</h2>
+      <h2>The creator economy will be <em style="font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent">$480B by 2027</em>, and <em style="font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent">still broken for 96%</em> of the people who build it.</h2>
     </div>
     <div class="prob-cards">
       <div class="prob-card reveal">
@@ -668,7 +668,7 @@ footer{padding:42px 0 54px;border-top:1px solid rgba(10,10,15,.08)}
   <div class="wrap">
     <div class="sec-head reveal">
       <div class="eyebrow dark">THE SOLUTION</div>
-      <h2>SPRK<sup style="color:#E8003D;font-size:.7em">*</sup> solves for each of these failures. Five surfaces. One Infrastructure.</h2>
+      <h2><span style="background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent">SPRK*</span> solves for each of these failures. Five surfaces. One Infrastructure.</h2>
       <p>SPRK* is an AI-powered digital ecosystem connecting audiences, advertisers and creators in culture, community, and commerce. Five integrated products form a self-reinforcing flywheel that pays creators like owners and builds the cultural intelligence layer every brand and LLM will need.</p>
     </div>
     <div class="crown">
@@ -681,7 +681,7 @@ footer{padding:42px 0 54px;border-top:1px solid rgba(10,10,15,.08)}
       <div class="flow reveal" aria-hidden="true"><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span></div>
       <div class="ai-base reveal">
         <h3>SPRK<span>*</span>AI</h3>
-        <p><b>The crown of the ecosystem:</b> a culturally fluent intelligence layer trained on rights-cleared, opt-in, revenue-shared data from the communities that set global culture. SPRK’s consented corpus is <b>an asset no competitor can legally replicate</b> — powering research, insight, predictive modeling, and enterprise licensing.</p>
+        <p><b>The crown of the ecosystem:</b> a culturally fluent intelligence layer trained on incentivized, rights-cleared, opted-in data from the communities that set global culture. SPRK*AI’s consented corpus is <b>an asset no competitor can legally replicate</b> — powering research, insight, predictive modeling, and enterprise licensing.</p>
       </div>
     </div>
 
@@ -700,9 +700,8 @@ footer{padding:42px 0 54px;border-top:1px solid rgba(10,10,15,.08)}
     </div>
     <div class="proto-video-wrap reveal">
       <div class="proto-video-frame">
-        <div class="proto-video-label">YC Application — 2026</div>
         <video class="proto-vid" controls preload="metadata" poster="assets/hero-poster.jpg">
-          <source src="assets/SPRK_YC_Demo_voiced.mp4" type="video/mp4" />
+          <source src="assets/SPRK_YC_Demo_final.mp4" type="video/mp4" />
         </video>
       </div>
     </div>
@@ -743,7 +742,7 @@ footer{padding:42px 0 54px;border-top:1px solid rgba(10,10,15,.08)}
           <p style="font-style:italic;color:rgba(255,255,255,.88)">&ldquo;Two decades building teams and creating campaigns worth hundreds of millions taught me how the creator economy really works. My own family, creators across ages, ethnicities, and platforms, showed me exactly what was missing. That gap is the reason for SPRK.&rdquo;</p>
           <footer style="font-size:12.5px;color:rgba(255,255,255,.5);margin-top:8px;font-style:normal">&mdash; Myron King, SPRK Founder &amp; CEO</footer>
         </blockquote>
-        <div class="wins-stat-row" style="margin-top:28px;grid-template-columns:repeat(3,1fr)">
+        <div class="wins-stat-row" style="margin-top:28px">
           <div class="wstat">
             <div class="wstat-label">Velocity</div>
             <div class="wstat-n">12 Weeks — Bootstrapped</div>
@@ -752,7 +751,7 @@ footer{padding:42px 0 54px;border-top:1px solid rgba(10,10,15,.08)}
           <div class="wstat">
             <div class="wstat-label">Traction &amp; Market Fit</div>
             <div class="wstat-n">45+ Beta Creators</div>
-            <div class="wstat-l">45+ founding creators onboarded via word of mouth alone, zero paid acquisition to date.</div>
+            <div class="wstat-l">45+ founding creators via word of mouth alone, zero paid acquisition to date.</div>
           </div>
           <div class="wstat">
             <div class="wstat-label">Attraction. Not Extraction.</div>
@@ -760,9 +759,9 @@ footer{padding:42px 0 54px;border-top:1px solid rgba(10,10,15,.08)}
             <div class="wstat-l">SPRK's UGC + AI-powered attention ecosystem captures massive GMV while growing CLV via SPRK*STUDIO subscriptions.</div>
           </div>
           <div class="wstat">
-            <div class="wstat-label">Competitive Edge</div>
-            <div class="wstat-n">Innovator's Dilemma</div>
-            <div class="wstat-l">Incumbents can't match SPRK's creator payout without destroying their own margins.</div>
+            <div class="wstat-label">Market Size</div>
+            <div class="wstat-n">~$15B TAM</div>
+            <div class="wstat-l">*US+CAN blended across PAVILION, SPRK*AI, and STUDIO — a focused slice of the global creator economy.</div>
           </div>
           <div class="wstat">
             <div class="wstat-label">Key Timing</div>
@@ -772,7 +771,7 @@ footer{padding:42px 0 54px;border-top:1px solid rgba(10,10,15,.08)}
           <div class="wstat">
             <div class="wstat-label">Data Moat</div>
             <div class="wstat-n">$48M–$80M+ AI Upside</div>
-            <div class="wstat-l">SPRK*AI's consented corpus is an asset no competitor can legally replicate — powering enterprise licensing, research, and data modeling.</div>
+            <div class="wstat-l">SPRK*AI’s consented corpus powers enterprise licensing, research, and data modeling revenue.</div>
           </div>
         </div>
       </div>
@@ -810,8 +809,6 @@ footer{padding:42px 0 54px;border-top:1px solid rgba(10,10,15,.08)}
       </div>
     </div>
 
-    <p class="model-note reveal" style="margin-bottom:36px">Both cases fund the same plan, across five revenue lines — creator SaaS, brand subscriptions, marketplace transaction fees, platform ads &amp; memberships, and SPRK*AI licensing — every driver benchmarked against Goldman Sachs, Kajabi, Grin, and Reddit. The raise is sized to 1.9× the conservative scenario’s peak cash need — SPRK is <b>default-alive on base-case</b> assumptions, and <b>the optimistic case is upside, not survival.</b></p>
-
     <h3 class="reveal" style="font-size:clamp(20px,2.2vw,32px);font-weight:700;letter-spacing:-.02em;margin-bottom:28px"><span style="background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent">Default-alive</span> on the base case. <span style="background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent">Category-scale</span> on the upside.</h3>
 
     <div class="scen">
@@ -839,6 +836,8 @@ footer{padding:42px 0 54px;border-top:1px solid rgba(10,10,15,.08)}
       </div>
     </div>
 
+    <p class="model-note reveal" style="margin-bottom:36px">Both cases fund the same plan, across five revenue lines — creator SaaS, brand subscriptions, marketplace transaction fees, platform ads &amp; memberships, and SPRK*AI licensing — every driver benchmarked against Goldman Sachs, Kajabi, Grin, and Reddit. The raise is sized to 1.9× the conservative scenario’s peak cash need — SPRK is <b>default-alive on base-case</b> assumptions, and <b>the optimistic case is upside, not survival.</b></p>
+
   </div>
 </section>
 
@@ -848,7 +847,7 @@ footer{padding:42px 0 54px;border-top:1px solid rgba(10,10,15,.08)}
     <div class="sec-head reveal">
       <div class="eyebrow">Momentum</div>
       <h2>Already moving. Capital sets the speed.</h2>
-      <p><b>45+ founding creators onboarded — via word of mouth alone, zero paid acquisition</b> — before the beta survey even opened, and <a href="https://yoursprk-creator-beta.netlify.app/" rel="noopener" style="color:#E8003D;font-weight:600">sign-ups are growing as you read this</a>.</p>
+      <p><b>45+ founding creators onboarded — via word of mouth alone, zero paid acquisition</b> — before the beta survey even opened, and <a href="https://yoursprk-creator-beta.netlify.app/" rel="noopener" style="color:#fff;font-weight:600;text-decoration:underline">sign-ups are growing as you read this</a>.</p>
     </div>
     <div class="timeline">
       <div class="mile reveal"><div class="when">Seed Close → Month 1</div><h3>The starting gun</h3><p>Engineering partners, AI/ML contractors, and the MVP sprint are staged and ready. The plan is built to move the day capital lands — and it will.</p></div>
