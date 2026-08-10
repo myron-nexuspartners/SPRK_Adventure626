@@ -570,12 +570,20 @@ function updatePreview() {
   doc.open();
   doc.write(html);
   doc.close();
-  // Auto-resize
-  setTimeout(() => {
+  // Auto-resize — retry a few times to catch late-loading images
+  function resizeIframe() {
     try {
-      iframe.style.height = doc.body.scrollHeight + 'px';
+      const h = Math.max(
+        doc.body.scrollHeight,
+        doc.documentElement.scrollHeight,
+        doc.body.offsetHeight
+      );
+      iframe.style.height = (h + 40) + 'px';
     } catch(e) {}
-  }, 100);
+  }
+  setTimeout(resizeIframe, 150);
+  setTimeout(resizeIframe, 500);
+  setTimeout(resizeIframe, 1200);
 }
 
 function countChars() {
