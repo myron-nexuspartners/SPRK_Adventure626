@@ -386,7 +386,7 @@
 <script>
 const HERO_IMG = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663453126583/tRilRxzNsgaxHXpH.jpg";
 const LOGO_IMG = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663453126583/QNwXRqBqqDgiQbgL.png";
-const THUMB_IMG = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663453126583/XZGHnZEUIITyPIWG.jpg";
+const THUMB_IMG = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663453126583/ibqiTAIZCwQcbEcw.jpg";
 const GC_SITE = "kingmyron888"; // GoatCounter site code
 
 function getFirstName() {
@@ -493,6 +493,23 @@ function buildEmailHtml(forExport) {
                 <p style="margin:0 0 22px 0;">${firstName},</p>
                 <p style="margin:0 0 22px 0;">${hookHtml}</p>
                 <p style="margin:0 0 22px 0; font-weight:800;"><span style="color:#FF6B35;">SPRK*</span> Flips This.</p>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Video thumbnail — between SPRK Flips This and body copy -->
+          <tr>
+            <td class="px" style="padding:4px 48px 20px 48px;">
+              <a href="${demoUrl}" target="_blank" style="display:block; text-decoration:none; border-radius:10px; overflow:hidden;">
+                <img src="${THUMB_IMG}" width="524" alt="Watch the SPRK Demo" style="display:block; width:100%; max-width:524px; height:auto; border-radius:10px; border:1px solid rgba(10,10,15,0.10);" />
+              </a>
+            </td>
+          </tr>
+
+          <!-- Body copy continued -->
+          <tr>
+            <td class="px" style="padding:0 48px 0 48px;">
+              <div style="font-family:'Bricolage Grotesque',Arial,Helvetica,sans-serif; font-size:16px; line-height:27px; font-weight:400; color:#0A0A0F;">
                 <p style="margin:0 0 22px 0;">One AI&#8209;assisted place to produce, distribute to every platform, and land brand deals, instead of stitching together four or more separate tools.</p>
                 <p style="margin:0 0 22px 0;">45+ creators onboarded and growing &mdash; entirely word of mouth, zero paid acquisition. More realness, more reward, where it belongs.</p>
                 <p style="margin:0 0 22px 0;">This is just one way <span style="color:#FF6B35; font-weight:700;">SPRK*</span> wins &mdash; we&rsquo;re an infrastructure solution, not just another AI&#8209;powered SaaS play.</p>
@@ -509,15 +526,6 @@ function buildEmailHtml(forExport) {
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                 <tr><td style="border-top:1px solid #E6DCD3; font-size:0; line-height:0;">&nbsp;</td></tr>
               </table>
-            </td>
-          </tr>
-
-          <!-- Video thumbnail -->
-          <tr>
-            <td class="px" style="padding:28px 48px 0 48px;">
-              <a href="${demoUrl}" target="_blank" style="display:block; text-decoration:none; border-radius:12px; overflow:hidden; position:relative;">
-                <img src="${THUMB_IMG}" width="524" alt="Watch the SPRK Demo" style="display:block; width:100%; max-width:524px; height:auto; border-radius:12px; border:2px solid rgba(255,107,53,0.25);" />
-              </a>
             </td>
           </tr>
 
