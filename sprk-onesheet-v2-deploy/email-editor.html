@@ -333,6 +333,16 @@
         <div class="field-hint">Appears in the salutation: "[First name],"</div>
       </div>
 
+      <!-- Firm name -->
+      <div class="field-group" style="margin-bottom:20px">
+        <div class="field-label">
+          Firm Name
+          <span class="badge">File name only</span>
+        </div>
+        <input type="text" id="firmname" placeholder="e.g. a16z" />
+        <div class="field-hint">Does not appear in the email body. Used only to name the exported file: SPRK-email-[name]-[firm]-[date]</div>
+      </div>
+
       <!-- Hook paragraph -->
       <div class="field-group">
         <div class="field-label">
@@ -638,6 +648,15 @@ function buildPlainText() {
   return `Subject: ${subject}\n\n${firstName},\n\n${hook}\n\nSPRK* Flips This.\n\nOne AI-assisted place to produce, distribute to every platform, and land brand deals, instead of stitching together four or more separate tools.\n\n45+ creators onboarded and growing — entirely word of mouth, zero paid acquisition. More realness, more reward, where it belongs.\n\nThis is just one way SPRK* wins — we're an infrastructure solution, not just another AI-powered SaaS play. ~$15B TAM (US+CAN). Raising now. Everything's here:\n\nIntroducing SPRK* — Raising Now. → https://sprk-adventure2026.netlify.app\n\nRelationship before transactions. Let's engage soon.\n\nMyron\n\n--\nMyron King · Founder & CEO, SPRK Unlimited Inc.\nhttps://sprk-adventure2026.netlify.app\nTo unsubscribe: mailto:myron.king@yoursprk.com?subject=Unsubscribe`;
 }
 
+function getFileSlug() {
+  const firstName = document.getElementById('firstname').value.trim();
+  const firmName = document.getElementById('firmname').value.trim();
+  const safeName = firstName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+  const safeFirm = firmName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+  const date = new Date().toISOString().slice(0,10);
+  return safeFirm ? `SPRK-email-${safeName}-${safeFirm}-${date}` : `SPRK-email-${safeName}-${date}`;
+}
+
 function exportEmail() {
   const firstName = document.getElementById('firstname').value.trim();
   if (!firstName) {
@@ -648,9 +667,8 @@ function exportEmail() {
   const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  const safeName = firstName.toLowerCase().replace(/[^a-z0-9]/g, '-');
   a.href = url;
-  a.download = `SPRK-email-${safeName}-${new Date().toISOString().slice(0,10)}.html`;
+  a.download = `${getFileSlug()}.html`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -668,9 +686,8 @@ function exportPlainText() {
   const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  const safeName = firstName.toLowerCase().replace(/[^a-z0-9]/g, '-');
   a.href = url;
-  a.download = `SPRK-email-${safeName}-${new Date().toISOString().slice(0,10)}.txt`;
+  a.download = `${getFileSlug()}.txt`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -691,6 +708,7 @@ function saveBoth() {
 
 function resetFields() {
   document.getElementById('firstname').value = '';
+  document.getElementById('firmname').value = '';
   document.getElementById('subject').value = 'SPRK*: Infrastructure for the Attention Economy. Raising Now.';
   document.getElementById('hook').value = "Creators build the internet\u2019s most valuable content and keep the least of what it\u2019s worth.";
   countChars();
