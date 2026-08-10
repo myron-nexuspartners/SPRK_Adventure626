@@ -370,8 +370,8 @@
       <div class="field-hint" style="line-height:1.8">
         ✅ Plain-text fallback via .txt export<br>
         ✅ Images hosted on CDN (not attached)<br>
-        ✅ Open tracking pixel fires on image load<br>
-        ✅ Click tracking on thumbnail &amp; CTA link<br>
+        ✅ Open tracking pixel fires on image load (GoatCounter)<br>
+        ✅ Site visits from email tracked via GoatCounter referrer<br>
         ✅ Unsubscribe line in footer<br>
         ⚠ Send from <strong>myron.king@yourSPRK.com</strong> — warm the domain first if new<br>
         ⚠ Send max 20–30/day on a new domain to avoid spam filters
@@ -421,11 +421,10 @@ function buildEmailHtml(forExport) {
   // Unique open-tracking pixel ID per recipient + timestamp
   const recipientId = firstName.toLowerCase().replace(/[^a-z0-9]/g, '-') + '-' + Date.now();
   const pixelUrl = `https://${GC_SITE}.goatcounter.com/count?p=/email-open/${recipientId}&t=1`;
-  // Click tracking: GoatCounter count URL logs the click then redirects to destination
-  const thumbClickUrl = `https://${GC_SITE}.goatcounter.com/count?p=/email-click-thumb/${recipientId}&r=https%3A%2F%2Fsprk-adventure2026.netlify.app%2F%23prototype`;
-  const ctaClickUrl = `https://${GC_SITE}.goatcounter.com/count?p=/email-click-cta/${recipientId}&r=https%3A%2F%2Fsprk-adventure2026.netlify.app`;
-  const demoUrl = thumbClickUrl;
-  const ctaUrl = ctaClickUrl;
+  // Direct links — GoatCounter redirect approach not supported on iOS Gmail
+  // Open tracking via pixel is sufficient; site visits from email show in GoatCounter with referrer
+  const demoUrl = 'https://sprk-adventure2026.netlify.app/#prototype';
+  const ctaUrl = 'https://sprk-adventure2026.netlify.app';
 
   return `<!DOCTYPE html>
 <html lang="en">
