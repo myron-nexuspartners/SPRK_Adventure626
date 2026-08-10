@@ -100,7 +100,8 @@
   .layout {
     display: grid;
     grid-template-columns: 400px 1fr;
-    min-height: calc(100vh - 56px);
+    height: calc(100vh - 56px);
+    overflow: hidden;
   }
 
   /* ── Left panel: controls ── */
@@ -112,6 +113,8 @@
     display: flex;
     flex-direction: column;
     gap: 24px;
+    height: 100%;
+    box-sizing: border-box;
   }
   .controls-title {
     font-size: 11px;
@@ -240,6 +243,8 @@
     flex-direction: column;
     align-items: center;
     gap: 0;
+    height: 100%;
+    box-sizing: border-box;
   }
   .preview-label {
     font-size: 11px;
@@ -293,6 +298,7 @@
   </div>
   <div class="topbar-actions">
     <button class="btn btn-ghost-light" onclick="resetFields()">↺ Reset</button>
+    <button class="btn btn-secondary" onclick="exportPlainText()">⬇ Download .txt</button>
     <button class="btn btn-primary" onclick="exportEmail()">⬇ Download .html</button>
   </div>
 </div>
@@ -341,18 +347,18 @@
 
     <div class="divider"></div>
 
+    <!-- Save Both button -->
+    <button class="btn btn-primary" style="width:100%; justify-content:center; padding:13px;" onclick="saveBoth()">💾 Save Both (.html + .txt)</button>
+
     <!-- Export instructions -->
     <div class="export-section">
-      <div class="export-title">How to send in Outlook (desktop)</div>
+      <div class="export-title">How to send</div>
       <ol class="export-steps">
-        <li>Click <strong>Download .html</strong> above</li>
-        <li>Open Outlook → <strong>New Email</strong></li>
-        <li>Paste the subject line (use the Copy button above)</li>
-        <li>Click the <strong>Insert</strong> tab in the ribbon</li>
-        <li>Click <strong>Attach File</strong> → select the downloaded .html file → when prompted, choose <strong>Insert as Text</strong> (not as attachment)</li>
-        <li>Alternatively: open the .html file in Chrome → <strong>Select All (Ctrl+A) → Copy (Ctrl+C)</strong> → click inside the Outlook compose body → <strong>Paste (Ctrl+V)</strong></li>
-        <li>Delete the existing signature if it appears below the pasted content</li>
-        <li>Add recipient → Send</li>
+        <li>Fill in First Name and Hook, then click <strong>Save Both</strong> to download .html + .txt</li>
+        <li>Copy the subject line using the <strong>Copy</strong> button above</li>
+        <li><strong>HTML email (best):</strong> Open the .html file in Chrome → Select All → Copy → paste into your email compose window</li>
+        <li><strong>Plain text fallback:</strong> Open the .txt file, copy the content, paste as plain text</li>
+        <li>Paste subject into the Subject field, add recipient → Send</li>
       </ol>
     </div>
 
@@ -362,9 +368,10 @@
     <div>
       <div class="controls-title">Deliverability Notes</div>
       <div class="field-hint" style="line-height:1.8">
-        ✅ Plain-text fallback included in export<br>
+        ✅ Plain-text fallback via .txt export<br>
         ✅ Images hosted on CDN (not attached)<br>
-        ✅ No tracking pixels (avoids spam flags on cold send)<br>
+        ✅ Open tracking pixel fires on image load<br>
+        ✅ Click tracking on thumbnail &amp; CTA link<br>
         ✅ Unsubscribe line in footer<br>
         ⚠ Send from <strong>myron.king@yourSPRK.com</strong> — warm the domain first if new<br>
         ⚠ Send max 20–30/day on a new domain to avoid spam filters
@@ -414,7 +421,11 @@ function buildEmailHtml(forExport) {
   // Unique open-tracking pixel ID per recipient + timestamp
   const recipientId = firstName.toLowerCase().replace(/[^a-z0-9]/g, '-') + '-' + Date.now();
   const pixelUrl = `https://${GC_SITE}.goatcounter.com/count?p=/email-open/${recipientId}&t=1`;
-  const demoUrl = 'https://sprk-adventure2026.netlify.app/#prototype';
+  // Click tracking: GoatCounter count URL logs the click then redirects to destination
+  const thumbClickUrl = `https://${GC_SITE}.goatcounter.com/count?p=/email-click-thumb/${recipientId}&r=https%3A%2F%2Fsprk-adventure2026.netlify.app%2F%23prototype`;
+  const ctaClickUrl = `https://${GC_SITE}.goatcounter.com/count?p=/email-click-cta/${recipientId}&r=https%3A%2F%2Fsprk-adventure2026.netlify.app`;
+  const demoUrl = thumbClickUrl;
+  const ctaUrl = ctaClickUrl;
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -500,7 +511,7 @@ function buildEmailHtml(forExport) {
           <!-- Video thumbnail — between SPRK Flips This and body copy -->
           <tr>
             <td class="px" style="padding:4px 48px 20px 48px;">
-              <a href="${demoUrl}" target="_blank" style="display:block; text-decoration:none; border-radius:10px; overflow:hidden;">
+              <a href="${demoUrl}" target="_blank" style="display:block; text-decoration:none; border-radius:10px; overflow:hidden;" title="Watch the SPRK Demo">
                 <img src="${THUMB_IMG}" width="524" alt="Watch the SPRK Demo" style="display:block; width:100%; max-width:524px; height:auto; border-radius:10px; border:1px solid rgba(10,10,15,0.10);" />
               </a>
             </td>
@@ -520,7 +531,7 @@ function buildEmailHtml(forExport) {
           <!-- CTA Link — standalone line below "Everything's here:" -->
           <tr>
             <td class="px" style="padding:0 48px 28px 48px;">
-              <a href="https://sprk-adventure2026.netlify.app" target="_blank" style="display:block; font-family:'Bricolage Grotesque',Arial,Helvetica,sans-serif; font-size:16px; font-weight:700; color:#FF6B35; text-decoration:none; white-space:nowrap;">Introducing SPRK* &mdash; Raising Now. &rarr;</a>
+              <a href="${ctaUrl}" target="_blank" style="display:block; font-family:'Bricolage Grotesque',Arial,Helvetica,sans-serif; font-size:16px; font-weight:700; color:#FF6B35; text-decoration:none; white-space:nowrap;">Introducing SPRK* &mdash; Raising Now. &rarr;</a>
             </td>
           </tr>
 
@@ -621,6 +632,13 @@ function copySubject() {
   });
 }
 
+function buildPlainText() {
+  const firstName = getFirstName();
+  const hook = getHook();
+  const subject = document.getElementById('subject').value.trim();
+  return `Subject: ${subject}\n\n${firstName},\n\n${hook}\n\nSPRK* Flips This.\n\nOne AI-assisted place to produce, distribute to every platform, and land brand deals, instead of stitching together four or more separate tools.\n\n45+ creators onboarded and growing — entirely word of mouth, zero paid acquisition. More realness, more reward, where it belongs.\n\nThis is just one way SPRK* wins — we're an infrastructure solution, not just another AI-powered SaaS play. ~$15B TAM (US+CAN). Raising now. Everything's here:\n\nIntroducing SPRK* — Raising Now. → https://sprk-adventure2026.netlify.app\n\nRelationship before transactions. Let's engage soon.\n\nMyron\n\n--\nMyron King · Founder & CEO, SPRK Unlimited Inc.\nhttps://sprk-adventure2026.netlify.app\nTo unsubscribe: mailto:myron.king@yoursprk.com?subject=Unsubscribe`;
+}
+
 function exportEmail() {
   const firstName = document.getElementById('firstname').value.trim();
   if (!firstName) {
@@ -638,7 +656,38 @@ function exportEmail() {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  showToast('✅ Downloaded — open in Outlook Web');
+  showToast('✅ HTML downloaded');
+}
+
+function exportPlainText() {
+  const firstName = document.getElementById('firstname').value.trim();
+  if (!firstName) {
+    showToast('⚠ Add a first name before downloading');
+    return;
+  }
+  const txt = buildPlainText();
+  const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const safeName = firstName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+  a.href = url;
+  a.download = `SPRK-email-${safeName}-${new Date().toISOString().slice(0,10)}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('✅ Plain text downloaded');
+}
+
+function saveBoth() {
+  const firstName = document.getElementById('firstname').value.trim();
+  if (!firstName) {
+    showToast('⚠ Add a first name before saving');
+    return;
+  }
+  exportEmail();
+  setTimeout(() => exportPlainText(), 400);
+  showToast('✅ Saving both files…');
 }
 
 function resetFields() {
