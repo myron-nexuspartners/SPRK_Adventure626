@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SPRK* Email Editor</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #0A0A0F;
+    --navy: #1E2235;
+    --steel: #4A5278;
+    --cream: #F5F0EB;
+    --warm: #F0E8E4;
+    --ember: #FF6B35;
+    --crimson: #CC0055;
+    --grad: linear-gradient(135deg, #FF6B35 0%, #E8003D 55%, #CC0055 100%);
+    --r: 12px;
+    --r-lg: 20px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    background: #F0ECE6;
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    background: var(--ink);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -.02em;
+  }
+  .topbar-brand .mark {
+    width: 30px; height: 30px;
+    background: var(--grad);
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    font-size: 16px;
+  }
+  .topbar-brand sup { color: var(--ember); font-size: .75em; }
+  .topbar-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.5);
+  }
+  .topbar-actions { display: flex; gap: 10px; align-items: center; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 18px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: all .18s;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+  .btn-ghost-light {
+    background: rgba(255,255,255,.1);
+    color: #fff;
+    border: 1.5px solid rgba(255,255,255,.2);
+  }
+  .btn-ghost-light:hover { background: rgba(255,255,255,.18); }
+  .btn-primary {
+    background: var(--grad);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(255,107,53,.35);
+  }
+  .btn-primary:hover { opacity: .9; transform: translateY(-1px); }
+  .btn-secondary {
+    background: #fff;
+    color: var(--ink);
+  }
+  .btn-secondary:hover { background: var(--cream); }
+
+  /* ── Layout ── */
+  .layout {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    min-height: calc(100vh - 56px);
+  }
+
+  /* ── Left panel: controls ── */
+  .controls {
+    background: #fff;
+    border-right: 1px solid rgba(10,10,15,.1);
+    padding: 28px 24px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .controls-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--steel);
+    margin-bottom: 16px;
+  }
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .field-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .field-label .badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 100px;
+    background: var(--warm);
+    color: var(--steel);
+    letter-spacing: .05em;
+  }
+  .field-label .badge.required {
+    background: rgba(255,107,53,.12);
+    color: var(--ember);
+  }
+  input[type="text"], textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid rgba(10,10,15,.12);
+    border-radius: var(--r);
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--ink);
+    background: #fff;
+    transition: border-color .18s;
+    resize: vertical;
+    line-height: 1.55;
+  }
+  input[type="text"]:focus, textarea:focus {
+    outline: none;
+    border-color: var(--ember);
+    box-shadow: 0 0 0 3px rgba(255,107,53,.1);
+  }
+  textarea { min-height: 120px; }
+  .field-hint {
+    font-size: 11.5px;
+    color: var(--steel);
+    line-height: 1.5;
+  }
+
+  .divider {
+    height: 1px;
+    background: rgba(10,10,15,.08);
+  }
+
+  .char-count {
+    font-size: 11px;
+    color: var(--steel);
+    text-align: right;
+    margin-top: 2px;
+  }
+  .char-count.warn { color: var(--ember); }
+
+  /* Subject copy button */
+  .subject-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .subject-row input { flex: 1; }
+  .copy-btn {
+    flex-shrink: 0;
+    padding: 10px 12px;
+    border-radius: var(--r);
+    border: 1.5px solid rgba(10,10,15,.12);
+    background: var(--cream);
+    cursor: pointer;
+    font-size: 13px;
+    transition: all .18s;
+    color: var(--ink);
+    font-family: inherit;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .copy-btn:hover { border-color: var(--ember); color: var(--ember); }
+  .copy-btn.copied { background: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
+
+  /* Export section */
+  .export-section {
+    background: var(--cream);
+    border-radius: var(--r-lg);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .export-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .export-steps {
+    font-size: 12px;
+    color: var(--steel);
+    line-height: 1.7;
+    padding-left: 16px;
+  }
+  .export-steps li { margin-bottom: 2px; }
+
+  /* ── Right panel: preview ── */
+  .preview-pane {
+    background: #E8E2DA;
+    overflow-y: auto;
+    padding: 40px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+  .preview-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(10,10,15,.4);
+    margin-bottom: 20px;
+    align-self: flex-start;
+  }
+  #email-preview-frame {
+    width: 100%;
+    max-width: 680px;
+    border: none;
+    background: transparent;
+    display: block;
+  }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--ink);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    z-index: 999;
+    transition: transform .3s cubic-bezier(0.16,1,0.3,1);
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .preview-pane { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="mark">✳</div>
+    SPRK<sup>*</sup>
+    <span class="topbar-label">Email Editor</span>
+  </div>
+  <div class="topbar-actions">
+    <button class="btn btn-ghost-light" onclick="resetFields()">↺ Reset</button>
+    <button class="btn btn-primary" onclick="exportEmail()">⬇ Download .html</button>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- ── Controls ── -->
+  <div class="controls">
+    <div>
+      <div class="controls-title">Compose</div>
+
+      <!-- Subject line -->
+      <div class="field-group" style="margin-bottom:20px">
+        <div class="field-label">
+          Subject Line
+          <span class="badge required">Copy separately</span>
+        </div>
+        <div class="subject-row">
+          <input type="text" id="subject" value="SPRK*: Infrastructure for the Attention Economy. Raising Now." oninput="updatePreview()" />
+          <button class="copy-btn" id="copy-subject-btn" onclick="copySubject()">Copy</button>
+        </div>
+        <div class="field-hint">This is NOT embedded in the HTML file — copy it manually into Outlook's Subject field before sending.</div>
+      </div>
+
+      <!-- First name -->
+      <div class="field-group" style="margin-bottom:20px">
+        <div class="field-label">
+          First Name
+          <span class="badge required">Required</span>
+        </div>
+        <input type="text" id="firstname" placeholder="e.g. Chris" oninput="updatePreview()" />
+        <div class="field-hint">Appears in the salutation: "[First name],"</div>
+      </div>
+
+      <!-- Hook paragraph -->
+      <div class="field-group">
+        <div class="field-label">
+          Hook Paragraph
+          <span class="badge">Editable</span>
+        </div>
+        <textarea id="hook" oninput="updatePreview(); countChars()">Creators build the internet's most valuable content and keep the least of what it's worth.</textarea>
+        <div class="char-count" id="hook-count">89 chars</div>
+        <div class="field-hint">This is the first paragraph after the salutation. Keep it punchy — 1–2 sentences max for a 30–60 sec read. Add a personalized hook here (e.g. reference their thesis, a portfolio company, or a recent post).</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Export instructions -->
+    <div class="export-section">
+      <div class="export-title">How to send in Outlook (desktop)</div>
+      <ol class="export-steps">
+        <li>Click <strong>Download .html</strong> above</li>
+        <li>Open Outlook → <strong>New Email</strong></li>
+        <li>Paste the subject line (use the Copy button above)</li>
+        <li>Click the <strong>Insert</strong> tab in the ribbon</li>
+        <li>Click <strong>Attach File</strong> → select the downloaded .html file → when prompted, choose <strong>Insert as Text</strong> (not as attachment)</li>
+        <li>Alternatively: open the .html file in Chrome → <strong>Select All (Ctrl+A) → Copy (Ctrl+C)</strong> → click inside the Outlook compose body → <strong>Paste (Ctrl+V)</strong></li>
+        <li>Delete the existing signature if it appears below the pasted content</li>
+        <li>Add recipient → Send</li>
+      </ol>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Deliverability notes -->
+    <div>
+      <div class="controls-title">Deliverability Notes</div>
+      <div class="field-hint" style="line-height:1.8">
+        ✅ Plain-text fallback included in export<br>
+        ✅ Images hosted on CDN (not attached)<br>
+        ✅ No tracking pixels (avoids spam flags on cold send)<br>
+        ✅ Unsubscribe line in footer<br>
+        ⚠ Send from <strong>myron.king@yourSPRK.com</strong> — warm the domain first if new<br>
+        ⚠ Send max 20–30/day on a new domain to avoid spam filters
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Preview ── -->
+  <div class="preview-pane">
+    <div class="preview-label">Live Preview</div>
+    <div id="email-preview-frame"></div>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+const HERO_IMG = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663453126583/tRilRxzNsgaxHXpH.jpg";
+const LOGO_IMG = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663453126583/QNwXRqBqqDgiQbgL.png";
+const THUMB_IMG = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663453126583/XZGHnZEUIITyPIWG.jpg";
+const GC_SITE = "kingmyron888"; // GoatCounter site code
+
+function getFirstName() {
+  const v = document.getElementById('firstname').value.trim();
+  return v || '[First name]';
+}
+
+function getHook() {
+  return document.getElementById('hook').value.trim() || "Creators build the internet\u2019s most valuable content and keep the least of what it\u2019s worth.";
+}
+
+function hookToHtml(text) {
+  // Escape HTML entities and convert newlines to <br>
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\n/g, '<br />');
+}
+
+function buildEmailHtml(forExport) {
+  const firstName = getFirstName();
+  const hookRaw = getHook();
+  const hookHtml = hookToHtml(hookRaw);
+  // Unique open-tracking pixel ID per recipient + timestamp
+  const recipientId = firstName.toLowerCase().replace(/[^a-z0-9]/g, '-') + '-' + Date.now();
+  const pixelUrl = `https://${GC_SITE}.goatcounter.com/count?p=/email-open/${recipientId}&t=1`;
+  const demoUrl = 'https://sprk-adventure2026.netlify.app/#prototype';
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>SPRK* — Raising Now</title>
+<!--[if mso]>
+<noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
+<![endif]-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;700;800&display=swap');
+  body, table, td, a { -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
+  table, td { mso-table-lspace:0pt; mso-table-rspace:0pt; }
+  img { -ms-interpolation-mode:bicubic; border:0; outline:none; text-decoration:none; }
+  body { margin:0!important; padding:0!important; background-color:#F5F0EB; width:100%!important; }
+  @media only screen and (max-width:640px) {
+    .px { padding-left:24px!important; padding-right:24px!important; }
+    .headline { font-size:26px!important; line-height:33px!important; }
+  }
+</style>
+</head>
+<body style="margin:0; padding:0; background-color:#F5F0EB;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F5F0EB;">
+    <tr>
+      <td align="center" style="padding:32px 16px;">
+        <!--[if mso]><table role="presentation" align="center" width="620" cellpadding="0" cellspacing="0" border="0"><tr><td><![endif]-->
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:620px; max-width:620px; background:#ffffff; border-radius:16px; overflow:hidden; box-shadow:0 4px 32px rgba(10,10,15,.10);">
+
+          <!-- Hero image -->
+          <tr>
+            <td style="padding:0; border-radius:16px 16px 0 0; overflow:hidden;">
+              <img src="${HERO_IMG}" width="620" alt="SPRK creator studio" style="display:block; width:100%; max-width:620px; height:auto;" />
+            </td>
+          </tr>
+
+          <!-- Logo -->
+          <tr>
+            <td align="center" class="px" style="padding:36px 48px 8px 48px;">
+              <img src="${LOGO_IMG}" width="132" alt="SPRK*" style="display:block; width:132px; height:auto; margin:0 auto;" />
+            </td>
+          </tr>
+
+          <!-- Headline -->
+          <tr>
+            <td align="center" class="px" style="padding:22px 48px 0 48px;">
+              <div class="headline" style="font-family:'Bricolage Grotesque',Arial,Helvetica,sans-serif; font-size:34px; line-height:41px; font-weight:800; color:#0A0A0F; letter-spacing:-0.5px;">
+                Turning everyday creators into <span style="color:#FF6B35;">media companies.</span> By&nbsp;design.
+              </div>
+            </td>
+          </tr>
+
+          <!-- Stats bar -->
+          <tr>
+            <td align="center" class="px" style="padding:18px 48px 0 48px;">
+              <div style="font-family:'Bricolage Grotesque',Arial,Helvetica,sans-serif; font-size:13px; line-height:20px; font-weight:400; color:#4A5278; letter-spacing:1px;">
+                45+ founding creators &nbsp;&middot;&nbsp; up to 95%<span style="color:#CC0055;">*</span> ad&#8209;revenue share &nbsp;&middot;&nbsp; Zero paid acquisition.
+              </div>
+            </td>
+          </tr>
+
+          <!-- Divider -->
+          <tr>
+            <td class="px" style="padding:36px 48px 0 48px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr><td style="border-top:1px solid #E6DCD3; font-size:0; line-height:0;">&nbsp;</td></tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Body copy -->
+          <tr>
+            <td class="px" style="padding:32px 48px 0 48px;">
+              <div style="font-family:'Bricolage Grotesque',Arial,Helvetica,sans-serif; font-size:16px; line-height:27px; font-weight:400; color:#0A0A0F;">
+                <p style="margin:0 0 22px 0;">${firstName},</p>
+                <p style="margin:0 0 22px 0;">${hookHtml}</p>
+                <p style="margin:0 0 22px 0; font-weight:800;"><span style="color:#FF6B35;">SPRK*</span> Flips This.</p>
+                <p style="margin:0 0 22px 0;">One AI&#8209;assisted place to produce, distribute to every platform, and land brand deals, instead of stitching together four or more separate tools.</p>
+                <p style="margin:0 0 22px 0;">45+ creators onboarded and growing &mdash; entirely word of mouth, zero paid acquisition. More realness, more reward, where it belongs.</p>
+                <p style="margin:0 0 22px 0;">This is just one way <span style="color:#FF6B35; font-weight:700;">SPRK*</span> wins &mdash; we&rsquo;re an infrastructure solution, not just another AI&#8209;powered SaaS play.</p>
+                <p style="margin:0 0 22px 0;">~$15B TAM (US+CAN). Raising now. Everything&rsquo;s here: <a href="https://sprk-adventure2026.netlify.app" style="color:#FF6B35; font-weight:700; text-decoration:none;">sprk-adventure2026.netlify.app</a></p>
+                <p style="margin:0 0 22px 0;">Relationship before transactions. Let&rsquo;s engage soon.</p>
+                <p style="margin:0;">Myron</p>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Footer divider -->
+          <tr>
+            <td class="px" style="padding:36px 48px 0 48px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr><td style="border-top:1px solid #E6DCD3; font-size:0; line-height:0;">&nbsp;</td></tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Video thumbnail -->
+          <tr>
+            <td class="px" style="padding:28px 48px 0 48px;">
+              <a href="${demoUrl}" target="_blank" style="display:block; text-decoration:none; border-radius:12px; overflow:hidden; position:relative;">
+                <img src="${THUMB_IMG}" width="524" alt="Watch the SPRK Demo" style="display:block; width:100%; max-width:524px; height:auto; border-radius:12px; border:2px solid rgba(255,107,53,0.25);" />
+              </a>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td class="px" style="padding:20px 48px 28px 48px;">
+              <div style="font-family:'Bricolage Grotesque',Arial,Helvetica,sans-serif; font-size:12px; line-height:19px; font-weight:400; color:#8E7A8A;">
+                Myron King &nbsp;&middot;&nbsp; Founder &amp; CEO, SPRK Unlimited Inc. &nbsp;&middot;&nbsp; <a href="https://sprk-adventure2026.netlify.app" style="color:#8E7A8A; text-decoration:underline;">sprk-adventure2026.netlify.app</a>
+                &nbsp;&middot;&nbsp; <a href="mailto:myron.king@yoursprk.com?subject=Unsubscribe" style="color:#8E7A8A; text-decoration:underline;">Unsubscribe</a>
+              </div>
+            </td>
+          </tr>
+
+          <!-- GoatCounter open-tracking pixel (1x1 transparent) -->
+          <tr>
+            <td style="padding:0; font-size:0; line-height:0;">
+              <img src="${pixelUrl}" width="1" height="1" alt="" style="display:block; width:1px; height:1px; border:0; margin:0; padding:0;" />
+            </td>
+          </tr>
+
+        </table>
+        <!--[if mso]></td></tr></table><![endif]-->
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
+
+function updatePreview() {
+  const html = buildEmailHtml(false);
+  const frame = document.getElementById('email-preview-frame');
+  // Use a shadow DOM / srcdoc iframe for safe preview
+  let iframe = frame.querySelector('iframe');
+  if (!iframe) {
+    iframe = document.createElement('iframe');
+    iframe.style.cssText = 'width:100%; border:none; background:transparent; display:block;';
+    iframe.setAttribute('scrolling', 'no');
+    frame.appendChild(iframe);
+  }
+  const doc = iframe.contentDocument || iframe.contentWindow.document;
+  doc.open();
+  doc.write(html);
+  doc.close();
+  // Auto-resize
+  setTimeout(() => {
+    try {
+      iframe.style.height = doc.body.scrollHeight + 'px';
+    } catch(e) {}
+  }, 100);
+}
+
+function countChars() {
+  const el = document.getElementById('hook');
+  const count = el.value.length;
+  const counter = document.getElementById('hook-count');
+  counter.textContent = count + ' chars';
+  counter.className = 'char-count' + (count > 300 ? ' warn' : '');
+}
+
+function copySubject() {
+  const subj = document.getElementById('subject').value;
+  navigator.clipboard.writeText(subj).then(() => {
+    const btn = document.getElementById('copy-subject-btn');
+    btn.textContent = '✓ Copied';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+function exportEmail() {
+  const firstName = document.getElementById('firstname').value.trim();
+  if (!firstName) {
+    showToast('⚠ Add a first name before downloading');
+    return;
+  }
+  const html = buildEmailHtml(true);
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const safeName = firstName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+  a.href = url;
+  a.download = `SPRK-email-${safeName}-${new Date().toISOString().slice(0,10)}.html`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('✅ Downloaded — open in Outlook Web');
+}
+
+function resetFields() {
+  document.getElementById('firstname').value = '';
+  document.getElementById('subject').value = 'SPRK*: Infrastructure for the Attention Economy. Raising Now.';
+  document.getElementById('hook').value = "Creators build the internet\u2019s most valuable content and keep the least of what it\u2019s worth.";
+  countChars();
+  updatePreview();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+  countChars();
+  updatePreview();
+});
+</script>
+</body>
+</html>
