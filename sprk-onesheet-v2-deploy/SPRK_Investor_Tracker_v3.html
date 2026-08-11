@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPRK — Investor Intelligence Database</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+  :root {
+    --bg: #faf9f6;
+    --surface: #ffffff;
+    --surface2: #f0ece4;
+    --border: #ddd8cf;
+    --sprk: #C8102E;
+    --sprk2: #A00D24;
+    --accent: #7c3aed;
+    --text: #1a1614;
+    --muted: #5a5550;
+    --fit5: #22c55e;
+    --fit4: #84cc16;
+    --fit3: #eab308;
+    --fit2: #f97316;
+    --fit1: #ef4444;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #faf9f6 0%, #f5ede0 50%, #faf9f6 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 32px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-mark {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--sprk), var(--sprk2));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 14px;
+    color: #fff;
+  }
+
+  .logo-text {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  .logo-sub {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .stat-val {
+    font-size: 22px;
+    font-weight: 700;
+    font-family: 'Space Mono', monospace;
+    color: var(--sprk);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .stat-divider {
+    width: 1px; height: 32px;
+    background: var(--border);
+  }
+
+  .controls {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 16px;
+  }
+
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 220px;
+  }
+
+  .search-wrap input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 14px 9px 36px;
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-wrap input:focus { border-color: var(--sprk); }
+
+  .search-icon {
+    position: absolute;
+    left: 11px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 30px 9px 12px;
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6b8a' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    transition: border-color 0.2s;
+  }
+
+  select:focus { border-color: var(--sprk); }
+
+  .btn {
+    background: linear-gradient(135deg, var(--sprk), var(--sprk2));
+    border: none;
+    border-radius: 8px;
+    padding: 9px 16px;
+    color: #ffffff;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+
+  .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+
+  .btn-secondary {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .btn-secondary:hover { border-color: var(--sprk); }
+
+  .results-bar {
+    padding: 10px 32px;
+    font-size: 12px;
+    color: var(--muted);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .results-bar span { color: var(--sprk); font-weight: 600; }
+
+  .table-wrap {
+    overflow-x: auto;
+    padding: 0 0 32px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+  }
+
+  thead th {
+    background: var(--surface);
+    padding: 12px 14px;
+    text-align: left;
+    font-size: 10px;
+    font-family: 'Space Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    white-space: nowrap;
+    user-select: none;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  thead th:hover { color: var(--sprk); }
+
+  thead th .sort-arrow { margin-left: 4px; opacity: 0.4; }
+  thead th.sorted .sort-arrow { opacity: 1; color: var(--sprk); }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+
+  tbody tr:hover { background: #f0ece4; }
+
+  td {
+    padding: 11px 14px;
+    vertical-align: middle;
+    line-height: 1.4;
+  }
+
+  .td-num {
+    font-family: 'Space Mono', monospace;
+    color: var(--muted);
+    font-size: 11px;
+    text-align: center;
+    width: 36px;
+  }
+
+  .type-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    font-family: 'Space Mono', monospace;
+    white-space: nowrap;
+  }
+
+  .type-vc { background: #ede9fe; color: #4c1d95; border: 1px solid #a78bfa; }
+  .type-angel { background: #dcfce7; color: #14532d; border: 1px solid #6ee7b7; }
+  .type-corp { background: #fff3e0; color: #7c2d12; border: 1px solid #fb923c; }
+  .type-intl { background: #fdf4ff; color: #581c87; border: 1px solid #d8b4fe; }
+  .type-accel { background: #e0f2fe; color: #0c4a6e; border: 1px solid #7dd3fc; }
+
+  .name-cell {
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .name-cell a {
+    color: #1a1614;
+    text-decoration: none;
+    border-bottom: 1px dashed var(--border);
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .name-cell a:hover { color: var(--sprk); border-color: var(--sprk); }
+
+  .hq-cell { color: var(--muted); white-space: nowrap; font-size: 12px; }
+
+  .inv-cell { color: #5b21b6; font-size: 11.5px; }
+
+  .thesis-cell {
+    color: #3a3530;
+    font-size: 11.5px;
+    max-width: 220px;
+    min-width: 160px;
+  }
+
+  .check-cell {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--sprk);
+    white-space: nowrap;
+  }
+
+  .fit-cell { text-align: center; }
+
+  .fit-dot {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 12px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .fit-5 { background: #dcfce7; color: #14532d; border: 1px solid #6ee7b7; }
+  .fit-4 { background: #ecfccb; color: #365314; border: 1px solid #a3e635; }
+  .fit-3 { background: #fefce8; color: #713f12; border: 1px solid #fde047; }
+  .fit-2 { background: #fff7ed; color: #7c2d12; border: 1px solid #fb923c; }
+  .fit-1 { background: #fef2f2; color: #7f1d1d; border: 1px solid #fca5a5; }
+
+  .no-results {
+    text-align: center;
+    padding: 60px 32px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .no-results span { display: block; font-size: 32px; margin-bottom: 8px; }
+
+  .export-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  /* ── Outreach Tracker Columns ── */
+  .contact-cell { min-width: 160px; max-width: 200px; vertical-align: top; padding-top: 10px; }
+  .contact-name { font-weight: 600; font-size: 12px; color: var(--text); }
+  .contact-name a { color: var(--text); text-decoration: none; border-bottom: 1px dashed var(--border); transition: color 0.15s; }
+  .contact-name a:hover { color: var(--sprk); border-color: var(--sprk); }
+  .contact-title { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .contact-hook { font-size: 11px; color: #3a3530; margin-top: 4px; line-height: 1.4; max-width: 220px; min-width: 160px; }
+  .contact-extra { margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--border); display: none; }
+  .contact-extra.open { display: block; }
+  .expand-btn { background: none; border: none; cursor: pointer; font-size: 10px; color: var(--muted); padding: 0; margin-top: 4px; font-family: 'Space Mono', monospace; }
+  .expand-btn:hover { color: var(--sprk); }
+  .inline-field { background: transparent; border: none; outline: none; width: 100%; font-family: 'Space Grotesk', sans-serif; font-size: 12px; color: var(--text); padding: 2px 4px; border-radius: 3px; transition: background 0.15s, border 0.15s; box-sizing: border-box; }
+  .inline-field:hover, .inline-field:focus { background: var(--surface2); outline: 1px solid var(--sprk); }
+  .inline-field::placeholder { color: var(--muted); font-style: italic; }
+  .tracker-check { width: 15px; height: 15px; accent-color: var(--sprk); cursor: pointer; }
+  .check-cell-track { text-align: center; vertical-align: middle; }
+  .file-cell { text-align: center; vertical-align: middle; min-width: 90px; }
+  .file-link { font-size: 11px; color: var(--sprk); text-decoration: none; word-break: break-all; }
+  .file-link:hover { text-decoration: underline; }
+  .upload-label { cursor: pointer; font-size: 11px; color: var(--muted); border: 1px dashed var(--border); border-radius: 4px; padding: 2px 6px; transition: color 0.15s, border-color 0.15s; white-space: nowrap; }
+  .upload-label:hover { color: var(--sprk); border-color: var(--sprk); }
+  .status-badge { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; font-family: 'Space Mono', monospace; font-weight: 600; }
+  .status-sent { background: #dcfce7; color: #14532d; border: 1px solid #6ee7b7; }
+  .status-verified { background: #e0f2fe; color: #0c4a6e; border: 1px solid #7dd3fc; }
+  th.tracker-col { min-width: 80px; }
+  th.hook-col { min-width: 180px; }
+  th.contact-col { min-width: 160px; }
+
+  /* ── Per-contact sub-rows ── */
+  .firm-first-row td { border-bottom: none !important; }
+  .firm-contact-row td { border-bottom: none !important; padding-top: 4px; padding-bottom: 4px; }
+  .firm-last-row td { border-bottom: 1px solid var(--border) !important; padding-bottom: 10px; }
+  .firm-add-row td { border-bottom: 1px solid var(--border) !important; padding-top: 2px; padding-bottom: 6px; }
+  .add-contact-btn { background: none; border: 1px dashed var(--border); border-radius: 4px; cursor: pointer; font-size: 11px; color: var(--muted); padding: 2px 8px; font-family: 'Space Grotesk', sans-serif; transition: color 0.15s, border-color 0.15s; }
+  .add-contact-btn:hover { color: var(--sprk); border-color: var(--sprk); }
+  .remove-file-btn { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 11px; margin-left: 4px; padding: 0; }
+  .remove-file-btn:hover { color: #ef4444; }
+  .contact-idx-badge { display: inline-block; width: 16px; height: 16px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--border); font-size: 9px; font-family: 'Space Mono', monospace; color: var(--muted); text-align: center; line-height: 16px; margin-right: 4px; flex-shrink: 0; }
+  .editable-name { font-weight: 600; font-size: 12px; }
+  .editable-name a { color: var(--text); text-decoration: none; border-bottom: 1px dashed var(--border); }
+  .editable-name a:hover { color: var(--sprk); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="logo">
+      <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663453126583/ZoGoIJDZQWLkYAFM.png" width="36" height="36" alt="SPRK" style="border-radius:8px;display:block">
+      <div>
+        <div class="logo-text">SPRK Investor Intelligence</div>
+        <div class="logo-sub">Seed &amp; Early-Stage Target Database · 2025–2026</div>
+      </div>
+    </div>
+    <div class="export-row">
+      <button class="btn btn-secondary" onclick="exportCSV('filtered')">↓ Export Filtered</button>
+      <button class="btn" onclick="exportCSV('all')">↓ Export All 100</button>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-val" id="total-count">100</div>
+      <div class="stat-label">Total Investors</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <div class="stat-val" id="fit5-count">—</div>
+      <div class="stat-label">Fit Score 5</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <div class="stat-val" id="fit4-count">—</div>
+      <div class="stat-label">Fit Score 4</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <div class="stat-val" id="filtered-count">100</div>
+      <div class="stat-label">Showing</div>
+    </div>
+  </div>
+
+  
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <div class="stat-val" id="sent-count">0</div>
+      <div class="stat-label">Emails Sent</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <div class="stat-val" id="verified-count">0</div>
+      <div class="stat-label">Verified</div>
+    </div>
+
+  <div class="controls">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search" placeholder="Search name, thesis, investments…" oninput="applyFilters()">
+    </div>
+    <select id="filter-type" onchange="applyFilters()">
+      <option value="">All Types</option>
+      <option value="VC">VC</option>
+      <option value="Angel">Angel</option>
+      <option value="Corp">Corporate VC</option>
+      <option value="Intl">International</option>
+      <option value="Accel">Accelerator</option>
+    </select>
+    <select id="filter-fit" onchange="applyFilters()">
+      <option value="">All Fit Scores</option>
+      <option value="5">5 – Best Fit</option>
+      <option value="4">4 – Strong Fit</option>
+      <option value="3">3 – Good Fit</option>
+      <option value="2">2 – Possible</option>
+      <option value="1">1 – Stretch</option>
+    </select>
+    <select id="filter-region" onchange="applyFilters()">
+      <option value="">All Regions</option>
+      <option value="US">United States</option>
+      <option value="UAE">UAE</option>
+      <option value="Saudi">Saudi Arabia</option>
+      <option value="India">India</option>
+      <option value="Asia">Asia</option>
+      <option value="Europe">Europe</option>
+    </select>
+    <select id="filter-status" onchange="applyFilters()">
+      <option value="">All Outreach Status</option>
+      <option value="sent">Email Sent</option>
+      <option value="not_sent">Not Sent</option>
+      <option value="verified">Address Verified</option>
+    </select>
+    <button class="btn btn-secondary" onclick="resetFilters()">Reset</button>
+  </div>
+</div>
+
+<div class="results-bar">
+  <div>Showing <span id="showing-count">100</span> of 100 investors · Sorted by SPRK Fit (desc)</div>
+  <div style="font-size:11px;">Click column headers to sort · SPRK fit scored against: AI-native creator economy, cultural data layer, marketplace + tools platform</div>
+</div>
+
+<div class="table-wrap">
+  <table id="investor-table">
+    <thead>
+      <tr>
+        <th class="td-num">#</th>
+        <th onclick="sortBy('type')">Type <span class="sort-arrow">↕</span></th>
+        <th onclick="sortBy('name')" class="sorted">Investor / Fund <span class="sort-arrow">↑</span></th>
+        <th onclick="sortBy('hq')">HQ <span class="sort-arrow">↕</span></th>
+        <th>Notable Portfolio (Top 3)</th>
+        <th>Investment Thesis</th>
+        <th onclick="sortBy('check')">Avg Seed Check <span class="sort-arrow">↕</span></th>
+        <th onclick="sortBy('fit')" class="sorted">SPRK Fit <span class="sort-arrow">↕</span></th>
+        <th class="contact-col tracker-col">Contact Name</th>
+        <th class="tracker-col">Title</th>
+        <th class="hook-col tracker-col">Personal Hook</th>
+        <th class="tracker-col">Email</th>
+        <th class="tracker-col" style="text-align:center">Verified</th>
+        <th class="tracker-col" style="text-align:center">Sent</th>
+        <th class="tracker-col file-col">File</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div class="no-results" id="no-results" style="display:none;">
+    <span>🔍</span>No investors match your filters. <a href="#" style="color:var(--sprk)" onclick="resetFilters()">Reset filters</a>
+  </div>
+</div>
+
+<script>
+const investors = [
+  // ═══════════════════ TIER 1 VCs — CREATOR / AI / PLATFORM ═══════════════════
+  {type:"VC",name:"Andreessen Horowitz (a16z)",url:"https://a16z.com",hq:"Menlo Park, CA",inv:"Substack, ElevenLabs, Roblox",thesis:"Creator economy, AI-native platforms, cultural tech — backs founder-led platforms redefining media and content infrastructure",check:"$1M–$5M",fit:5,region:"US"},
+  {type:"VC",name:"Lightspeed Venture Partners",url:"https://lsvp.com",hq:"Menlo Park, CA",inv:"Snap, Calm, Byju's",thesis:"AI-powered creator tools and consumer platforms; Partner Michael Mignano (ex-Anchor/Spotify) leads creator-focused thesis",check:"$500K–$3M",fit:5,region:"US"},
+  {type:"VC",name:"Seven Seven Six (776)",url:"https://sevensevensix.com",hq:"New York, NY",inv:"Beehiiv, Topsort, Substack",thesis:"Alexis Ohanian's seed fund backing creator economy founders; champions underrepresented founders and Black creator infrastructure",check:"$500K–$2M",fit:5,region:"US"},
+  {type:"VC",name:"Bond Capital",url:"https://bond.vc",hq:"San Francisco, CA",inv:"Substack, Passes, Spotify",thesis:"Creator monetization infrastructure, subscription and membership platforms, tools enabling creator-to-fan direct economy",check:"$2M–$10M",fit:5,region:"US"},
+  {type:"VC",name:"New Enterprise Associates (NEA)",url:"https://nea.com",hq:"Chevy Chase, MD",inv:"beehiiv, Coursera, Robinhood",thesis:"Creator monetization tools, upskilling platforms, AI productivity; led beehiiv's Series B — aligned to SPRK's upskilling layer",check:"$1M–$5M",fit:5,region:"US"},
+  {type:"VC",name:"Founders Fund",url:"https://foundersfund.com",hq:"San Francisco, CA",inv:"Palantir, Spotify, Airbnb",thesis:"Contrarian bets on founders building technology that changes civilization; AI and creator infrastructure at massive scale",check:"$1M–$5M",fit:5,region:"US"},
+  {type:"VC",name:"Sequoia Capital",url:"https://sequoiacap.com",hq:"Menlo Park, CA",inv:"Captions, YouTube, Instagram",thesis:"Category-defining consumer and AI platforms; backs Captions (AI creator tools) — clear alignment with SPRK-OS",check:"$1M–$3M",fit:5,region:"US"},
+  {type:"VC",name:"Bessemer Venture Partners",url:"https://bvp.com",hq:"San Francisco, CA",inv:"Twitch, LinkedIn, Pinterest",thesis:"Consumer social, creator tools, AI-native SaaS — 'Road to Nasdaq' portfolio philosophy; creator platform experience deep",check:"$1M–$5M",fit:5,region:"US"},
+  {type:"VC",name:"First Round Capital",url:"https://firstround.com",hq:"San Francisco, CA",inv:"Uber, Square, Notion",thesis:"Backs early-stage founders building enduring platforms; strong network for AI/creator tools at pre-seed and seed",check:"$500K–$2M",fit:5,region:"US"},
+  {type:"VC",name:"Lerer Hippeau",url:"https://lererhippeau.com",hq:"New York, NY",inv:"Glossier, Mirror, Warby Parker",thesis:"NYC seed fund focused on media, culture, consumer brand, and creator economy; backs culturally fluent founders",check:"$500K–$1.5M",fit:5,region:"US"},
+  {type:"VC",name:"Inspired Capital",url:"https://inspiredcapital.com",hq:"New York, NY",inv:"ShopMy, Ramp, Thingtesting",thesis:"Backs consumer and creator monetization platforms; led ShopMy's $26.5M Series A — deep affiliate/creator commerce alignment",check:"$500K–$2M",fit:5,region:"US"},
+  {type:"VC",name:"Union Square Ventures (USV)",url:"https://usv.com",hq:"New York, NY",inv:"Twitter, Tumblr, Etsy",thesis:"Network effects and platforms creating value for users and creators; backs marketplace models and cultural networks",check:"$500K–$2M",fit:5,region:"US"},
+  {type:"VC",name:"General Catalyst",url:"https://generalcatalyst.com",hq:"Cambridge, MA",inv:"Airbnb, Stripe, Figma",thesis:"Resilience-focused investing; AI-native consumer platforms with positive societal impact; large seed through growth",check:"$2M–$8M",fit:5,region:"US"},
+  {type:"VC",name:"Benchmark",url:"https://benchmark.com",hq:"San Francisco, CA",inv:"Twitter, Instagram, Snap",thesis:"Small partnership making focused bets on breakthrough consumer networks; creator-economy roots, high conviction on cultural platforms",check:"$1M–$5M",fit:5,region:"US"},
+  {type:"VC",name:"Index Ventures",url:"https://indexventures.com",hq:"San Francisco / London",inv:"Patreon, Discord, Figma",thesis:"Creator monetization infrastructure pioneer (Patreon early backer); backs global platforms with strong community mechanics",check:"$1M–$5M",fit:5,region:"Europe"},
+  {type:"VC",name:"Craft Ventures",url:"https://craftventures.com",hq:"San Francisco, CA",inv:"Agentio, Twitter, SpaceX",thesis:"Backs creator marketplace platforms; led Agentio (creator ad marketplace) round — directly aligned to SPRK Pavilion",check:"$500K–$3M",fit:5,region:"US"},
+  {type:"VC",name:"Night Ventures",url:"https://nightventures.com",hq:"Los Angeles, CA",inv:"Crumbl Cookies, Feastables, NTWRK",thesis:"Run by Night Media (MrBeast's mgmt co) — invests in creator-native brands and infrastructure; deep cultural capital alignment",check:"$250K–$2M",fit:5,region:"US"},
+  {type:"VC",name:"UTA Ventures",url:"https://unitedtalent.com",hq:"Los Angeles, CA",inv:"Cameo, Spotify, Discord",thesis:"United Talent Agency's VC arm — deeply integrated in creator/talent economy; strategic partner for talent marketplace vision",check:"$500K–$2M",fit:5,region:"US"},
+  {type:"VC",name:"Khosla Ventures",url:"https://khoslaventures.com",hq:"Menlo Park, CA",inv:"OpenAI, DoorDash, Stripe",thesis:"AI-first bet-the-world investing; backs AI infrastructure and creator-facing AI applications at seed and Series A",check:"$1M–$5M",fit:5,region:"US"},
+  {type:"VC",name:"Accel",url:"https://accel.com",hq:"Palo Alto, CA",inv:"Facebook, Atlassian, Spotify",thesis:"Consumer social, SaaS, global platforms; backs creative software and marketplace businesses from seed through IPO",check:"$1M–$5M",fit:5,region:"US"},
+
+  // ═══════════════════ STRONG FIT VCs ═══════════════════
+  {type:"VC",name:"Initialized Capital",url:"https://initialized.com",hq:"San Francisco, CA",inv:"Coinbase, Instacart, Reddit",thesis:"Garry Tan's firm; backs contrarian founders building category-defining platforms; cultural internet native",check:"$500K–$2M",fit:4,region:"US"},
+  {type:"VC",name:"Spark Capital",url:"https://sparkcapital.com",hq:"Boston / San Francisco",inv:"Twitter, Slack, Tumblr",thesis:"Consumer social, media, and platform companies; strong creator economy track record from early Twitter/Tumblr",check:"$500K–$3M",fit:4,region:"US"},
+  {type:"VC",name:"Slow Ventures",url:"https://slow.co",hq:"San Francisco, CA",inv:"Substack, Snap, Patreon",thesis:"Creator-economy focused seed; Patreon, Substack early backer — believes in creator ownership and fan-to-creator economics",check:"$250K–$1M",fit:4,region:"US"},
+  {type:"VC",name:"Unusual Ventures",url:"https://unusual.vc",hq:"Menlo Park, CA",inv:"Skydio, Cobalt, Unlearn AI",thesis:"Founder-in-residence model; AI platforms and creator tools with hands-on operational support post-investment",check:"$1M–$4M",fit:4,region:"US"},
+  {type:"VC",name:"Freestyle Capital",url:"https://freestyle.vc",hq:"San Francisco, CA",inv:"Patreon (early), Branch, Hipcamp",thesis:"Seed-stage backer; early Patreon investor with deep roots in creator economics and cultural media platforms",check:"$500K–$1.5M",fit:4,region:"US"},
+  {type:"VC",name:"SignalFire",url:"https://signalfire.com",hq:"San Francisco, CA",inv:"Grammarly, Faire, Pitch",thesis:"Data-driven seed investing in creator tools and AI platforms; proprietary signal approach to spot breakout companies early",check:"$500K–$3M",fit:4,region:"US"},
+  {type:"VC",name:"Redpoint Ventures",url:"https://redpoint.com",hq:"Menlo Park, CA",inv:"Netflix, Stripe, Twilio",thesis:"Consumer and enterprise platforms at scale; AI infrastructure and developer-facing tools with path to large user bases",check:"$1M–$4M",fit:4,region:"US"},
+  {type:"VC",name:"Thrive Capital",url:"https://thrivecap.com",hq:"New York, NY",inv:"Instagram, Spotify, GitHub",thesis:"NYC-based believer in consumer internet and creative platforms; backs cultural internet infrastructure with long hold horizons",check:"$1M–$5M",fit:4,region:"US"},
+  {type:"VC",name:"Norwest Venture Partners",url:"https://nvp.com",hq:"Palo Alto, CA",inv:"Spotify, Calm, Udemy",thesis:"Consumer media, upskilling, wellbeing platforms; Udemy and Calm investments directly align with SPRK's education product",check:"$2M–$8M",fit:4,region:"US"},
+  {type:"VC",name:"Greycroft",url:"https://greycroft.com",hq:"New York / Los Angeles",inv:"Bumble, Venmo, Acorns",thesis:"Consumer internet and creator economy from seed to growth; LA roots give cultural media and entertainment edge",check:"$500K–$3M",fit:4,region:"US"},
+  {type:"VC",name:"Base10 Partners",url:"https://base10.vc",hq:"San Francisco, CA",inv:"Figma, Notion, Coda",thesis:"Automation of the real economy + diversity mandate; backs founders of color building transformative platforms",check:"$500K–$3M",fit:4,region:"US"},
+  {type:"VC",name:"Precursor Ventures",url:"https://precursorvc.com",hq:"San Francisco, CA",inv:"Sprig, Gigs, Simbi",thesis:"Pre-seed/seed for underrepresented founders building consumer platforms; Charles Hudson strong cultural lens — SPRK founder alignment",check:"$100K–$500K",fit:4,region:"US"},
+  {type:"VC",name:"Harlem Capital",url:"https://harlemcapital.com",hq:"New York, NY",inv:"Mayvenn, Reali, Modern Health",thesis:"Backs underrepresented founders across consumer, SaaS, and media; aligned with SPRK's Black creator + cultural fluency thesis",check:"$1M–$3M",fit:4,region:"US"},
+  {type:"VC",name:"Andreessen Horowitz Cultural Leadership Fund",url:"https://a16z.com/clf",hq:"Menlo Park, CA",inv:"Genius, Overtime, Sleeper",thesis:"Sub-fund within a16z focused exclusively on Black culture and entertainment tech; near-perfect SPRK cultural thesis alignment",check:"$500K–$2M",fit:5,region:"US"},
+  {type:"VC",name:"Bain Capital Ventures",url:"https://baincapitalventures.com",hq:"San Francisco / Boston",inv:"DocuSign, LinkedIn, Rent the Runway",thesis:"SaaS, commerce, fintech, and consumer platforms; follow-on capital depth for successful seed investments",check:"$2M–$10M",fit:3,region:"US"},
+  {type:"VC",name:"IVP (Institutional Venture Partners)",url:"https://ivp.com",hq:"Menlo Park, CA",inv:"Twitter, Snap, Netflix",thesis:"Late seed to Series B in consumer and SaaS breakouts; historically backs creator-adjacent platforms before clear monetization",check:"$5M–$20M",fit:3,region:"US"},
+  {type:"VC",name:"Kleiner Perkins",url:"https://kleinerperkins.com",hq:"Menlo Park, CA",inv:"Google, Amazon, Spotify",thesis:"AI-native companies and platform plays with massive TAM; prefers founders with technical moats and clear GTM",check:"$1M–$5M",fit:3,region:"US"},
+  {type:"VC",name:"CRV (Charles River Ventures)",url:"https://crv.com",hq:"Cambridge, MA",inv:"Dropbox, Twitter, Airtable",thesis:"Early-stage bets on founders building tools for creators and knowledge workers; AI + productivity platform focus",check:"$500K–$2M",fit:4,region:"US"},
+  {type:"VC",name:"Floodgate",url:"https://floodgate.com",hq:"Palo Alto, CA",inv:"Twitter, Lyft, Twitch",thesis:"Mike Maples pre-seed firm; backs founders building 'thunder lizard' breakout companies in culture and consumer",check:"$250K–$1M",fit:4,region:"US"},
+  {type:"VC",name:"Human Ventures",url:"https://humanventures.co",hq:"New York, NY",inv:"Capsule, Lively, Springboard",thesis:"NYC firm investing at intersection of human behavior and technology; backs platforms enabling new forms of work and creativity",check:"$500K–$2M",fit:4,region:"US"},
+
+  // ═══════════════════ ACCELERATORS ═══════════════════
+  {type:"Accel",name:"Y Combinator",url:"https://ycombinator.com",hq:"San Francisco, CA",inv:"Airbnb, Stripe, Dropbox",thesis:"Batch model backing any sector; $500K standard deal; strong AI/creator company track record; alumni network is unmatched",check:"$500K (standard)",fit:5,region:"US"},
+  {type:"Accel",name:"Techstars",url:"https://techstars.com",hq:"Boulder, CO",inv:"SendGrid, DigitalOcean, Sphero",thesis:"Global accelerator with 50+ programs; LA/NYC programs focus on media and creator tech; $120K for 6% equity",check:"$120K",fit:3,region:"US"},
+  {type:"Accel",name:"500 Global",url:"https://500.co",hq:"San Francisco, CA",inv:"Credit Karma, Talkdesk, Udemy",thesis:"International-first seed fund with $150K standard check; strong emerging markets coverage (MENA, SEA, India) aligning to SPRK global ambition",check:"$150K",fit:3,region:"US"},
+
+  // ═══════════════════ ANGELS ═══════════════════
+  {type:"Angel",name:"Alexis Ohanian",url:"https://sevensevensix.com",hq:"Miami, FL",inv:"Initialized, Reddit, Notion",thesis:"Backs culture-forward creator economy founders; champion of underrepresented builders; runs 776 fund in parallel",check:"$50K–$500K",fit:5,region:"US"},
+  {type:"Angel",name:"Naval Ravikant",url:"https://naval.al",hq:"San Francisco, CA",inv:"Twitter, Uber, Notion",thesis:"AngelList founder; backs ambitious founders building wealth-creation tools and platforms; prolific angel",check:"$25K–$250K",fit:3,region:"US"},
+  {type:"Angel",name:"Michael Ovitz",url:"https://artistsmgmtgroup.com",hq:"Los Angeles, CA",inv:"Beats, Kidoz, Nativo",thesis:"Legendary CAA co-founder; invests at intersection of entertainment, tech, and talent; SPRK Pavilion natural fit",check:"$100K–$1M",fit:4,region:"US"},
+  {type:"Angel",name:"Troy Carter",url:"https://af.square",hq:"Los Angeles, CA",inv:"Spotify, Dropbox, Lyft",thesis:"Music industry insider turned tech investor; backs creator monetization and cultural platforms; Lady Gaga's former manager",check:"$50K–$500K",fit:5,region:"US"},
+  {type:"Angel",name:"Scooter Braun (HYBE America)",url:"https://hybeamerica.com",hq:"Los Angeles, CA",inv:"Spotify, Uber, SoundCloud",thesis:"Music/entertainment super-manager; invests at the creator-tech nexus; SPRK cultural and talent marketplace fit",check:"$100K–$1M",fit:4,region:"US"},
+  {type:"Angel",name:"Ev Williams (Obvious Ventures)",url:"https://obvious.com",hq:"San Francisco, CA",inv:"Medium, Twitter, Impossible Foods",thesis:"Co-founder of Twitter, Medium; backs creator platforms and media tools; believes in content creator economics deeply",check:"$100K–$1M",fit:5,region:"US"},
+  {type:"Angel",name:"Kevin Durant (35V)",url:"https://35ventures.com",hq:"New York, NY",inv:"Coinbase, Postmates, JetSmarter",thesis:"Athlete-to-investor; backs consumer brands and creator platforms with cultural authenticity; athlete creator segment alignment",check:"$50K–$500K",fit:4,region:"US"},
+  {type:"Angel",name:"Serena Williams (Serena Ventures)",url:"https://serenaventures.com",hq:"Los Angeles, CA",inv:"MasterClass, Daily Harvest, Nerd Street",thesis:"Backs underrepresented founders across consumer and creator tech; SPRK diversity-forward creator economy alignment",check:"$100K–$750K",fit:4,region:"US"},
+  {type:"Angel",name:"Kimbal Musk (Big Green)",url:"https://biggreen.org",hq:"Boulder, CO",inv:"Square, Tesla (board), Lyft",thesis:"Mission-driven early tech bets; backs platforms creating economic access; less creator-focused but high-profile check",check:"$50K–$250K",fit:2,region:"US"},
+  {type:"Angel",name:"Josh Kushner (Thrive Capital)",url:"https://thrivecap.com",hq:"New York, NY",inv:"Instagram, Oscar, GitHub",thesis:"NYC consumer/internet platform backer; Oscar Health founder; backs culturally fluent consumer platforms",check:"$250K–$2M",fit:4,region:"US"},
+  {type:"Angel",name:"Ryan Tedder (OneRepublic / angel)",url:"https://www.instagram.com/ryantedder",hq:"Los Angeles, CA",inv:"Artlist, Soundtrack Your Brand",thesis:"Grammy-winning artist-turned-angel; backs music-tech and creator tools with authentic industry lens",check:"$25K–$200K",fit:4,region:"US"},
+  {type:"Angel",name:"Nas (QueensBridge Venture Partners)",url:"https://queensbridgeventurePartners.com",hq:"New York, NY",inv:"Lyft, Robinhood, Coinbase",thesis:"Iconic hip-hop artist investing in tech platforms accessible to urban communities; SPRK cultural alignment strong",check:"$50K–$500K",fit:5,region:"US"},
+  {type:"Angel",name:"Jay Brown (Roc Nation / angel)",url:"https://rocnation.com",hq:"New York, NY",inv:"Armand de Brignac, Tidal, D'USSÉ",thesis:"Entertainment mogul; invests in platforms that empower Black creators and cultural tastemakers",check:"$100K–$1M",fit:5,region:"US"},
+
+  // ═══════════════════ CORPORATE / STRATEGIC VCs ═══════════════════
+  {type:"Corp",name:"GV (Google Ventures)",url:"https://gv.com",hq:"Mountain View, CA",inv:"Uber, Slack, Figma",thesis:"Google's VC arm; backs AI-native platforms and creator tools that could integrate with Google's ecosystem",check:"$1M–$5M",fit:4,region:"US"},
+  {type:"Corp",name:"M12 (Microsoft Ventures)",url:"https://m12.vc",hq:"San Francisco, CA",inv:"Typeface.ai, Split.io, Loom",thesis:"Backs AI platforms and content creation tools; Typeface investment (AI-generated social content) directly aligns to SPRK-OS",check:"$2M–$10M",fit:4,region:"US"},
+  {type:"Corp",name:"Comcast Ventures",url:"https://comcastventures.com",hq:"Philadelphia, PA",inv:"Brightcove, FreeWheel, thePlatform",thesis:"Strategic backer of media technology and streaming platforms; SPRK digital infotainment hub (SPRK.com) alignment",check:"$1M–$5M",fit:4,region:"US"},
+  {type:"Corp",name:"Warner Music Group Investments",url:"https://wmg.com",hq:"New York, NY",inv:"Spotify (early), SoundCloud, Audiomack",thesis:"Music industry strategic backer; creator-facing platforms and music-adjacent cultural tech with talent ecosystem integration",check:"$500K–$5M",fit:4,region:"US"},
+  {type:"Corp",name:"Sony Innovation Fund",url:"https://sif.sony.com",hq:"Tokyo / New York",inv:"Spotify (minority stake), Audius, Polygon",thesis:"Entertainment + tech crossover; backs audio/creator platforms with potential music catalog integration",check:"$1M–$5M",fit:3,region:"Asia"},
+  {type:"Corp",name:"CAA Ventures (Creative Artists Agency)",url:"https://caa.com",hq:"Los Angeles, CA",inv:"Fancy, Luminary, Thuzio",thesis:"Talent agency strategic investor; backs platforms that monetize and represent creative talent — SPRK Pavilion fit",check:"$500K–$3M",fit:5,region:"US"},
+  {type:"Corp",name:"Viacom/Paramount Strategic Investing",url:"https://paramount.com",hq:"New York, NY",inv:"FuboTV, AwesomenessTV, Pluto TV",thesis:"Media co backing next-gen content platforms; ZenTV/THETA and SPRK.com content hub alignment",check:"$1M–$5M",fit:3,region:"US"},
+  {type:"Corp",name:"Amazon Alexa Fund",url:"https://developer.amazon.com/alexa-fund",hq:"Seattle, WA",inv:"Ring, Otonomo, Earable",thesis:"Voice and AI startup backer; growing AI/creator interest post-Alexa+ launch; potential SPRK-OS tool integration",check:"$500K–$5M",fit:3,region:"US"},
+  {type:"Corp",name:"Snap Inc. Investments",url:"https://snap.com",hq:"Santa Monica, CA",inv:"Anchored Narratives, Finish Line",thesis:"Strategic minority stakes in AR/creator platforms; Gen Z creator tools with visual storytelling — SPRK-OS platform fit",check:"$500K–$3M",fit:3,region:"US"},
+  {type:"Corp",name:"Spotify Investments / Seed Sound",url:"https://spotify.com",hq:"Stockholm / New York",inv:"Chartmetric, Soundiiz, Loudly",thesis:"Backs audio-adjacent creator tools; potential pipeline for SPRK's audio/music creator tools (SPRK-OS)",check:"$250K–$2M",fit:3,region:"Europe"},
+
+  // ═══════════════════ INTERNATIONAL — UAE ═══════════════════
+  {type:"Intl",name:"Shorooq Partners",url:"https://shorooq.com",hq:"Abu Dhabi, UAE",inv:"Careem, Property Finder, Kitopi",thesis:"UAE-Saudi corridor seed to Series A; SaaS, marketplaces, and digital platforms; active preseed before metrics mature — SPRK fit",check:"$500K–$3M",fit:4,region:"UAE"},
+  {type:"Intl",name:"BECO Capital",url:"https://beco.vc",hq:"Dubai, UAE",inv:"Careem, Fetchr, Bayzat",thesis:"Category-defining early institutional rounds across MENA; digital platforms and marketplaces; a BECO check is a regional signal",check:"$1M–$5M",fit:4,region:"UAE"},
+  {type:"Intl",name:"Global Ventures",url:"https://globalventures.vc",hq:"Dubai, UAE",inv:"Anghami, Swvl, Vezeeta",thesis:"Emerging market consumer platforms; Anghami (Arab Spotify) investment makes SPRK cultural media hub highly relevant",check:"$500K–$3M",fit:4,region:"UAE"},
+  {type:"Intl",name:"Wamda Capital",url:"https://wamda.com",hq:"Dubai, UAE",inv:"Souq (acquired by Amazon), Fetchr, Yallacompare",thesis:"MENA-focused tech VC; entrepreneurship ecosystem builder; backs platforms with regional content and cultural relevance",check:"$250K–$2M",fit:3,region:"UAE"},
+  {type:"Intl",name:"Middle East Venture Partners (MEVP)",url:"https://mevp.com",hq:"Dubai, UAE",inv:"Anghami, Washmen, Pure Harvest",thesis:"Early-stage MENA digital platforms; Anghami backer again — strong precedent for culturally native media platforms",check:"$500K–$3M",fit:3,region:"UAE"},
+  {type:"Intl",name:"Nuwa Capital",url:"https://nuwacapital.com",hq:"Dubai, UAE",inv:"Anara, Ruba, Ogram",thesis:"Backs emerging market platforms and marketplaces; female-founded GP adds diversity lens relevant to SPRK creator inclusion thesis",check:"$500K–$2M",fit:3,region:"UAE"},
+  {type:"Intl",name:"Hub71 (Abu Dhabi tech hub fund)",url:"https://hub71.com",hq:"Abu Dhabi, UAE",inv:"Hala, Pure Harvest, Stake",thesis:"Government-backed Abu Dhabi startup ecosystem; offers $100K–$3M + incentives to startups establishing UAE presence",check:"$100K–$3M",fit:3,region:"UAE"},
+  {type:"Intl",name:"Dara Holdings",url:"https://daraholdings.com",hq:"Dubai, UAE",inv:"Careem (co-investor), Swvl, Paymob",thesis:"Family office turned VC; backs digital platforms with MENA consumer scale; strategic for SPRK's international distribution",check:"$500K–$3M",fit:3,region:"UAE"},
+
+  // ═══════════════════ INTERNATIONAL — SAUDI ARABIA ═══════════════════
+  {type:"Intl",name:"STV (Saudi Technology Ventures)",url:"https://stv.vc",hq:"Riyadh, Saudi Arabia",inv:"Hunger Station, Jahez, Salla",thesis:"Largest dedicated VC in MENA; backs consumer and marketplace platforms aligned with Vision 2030 digital economy goals",check:"$1M–$5M",fit:4,region:"Saudi"},
+  {type:"Intl",name:"Sanabil Investments (Saudi Aramco)",url:"https://sanabilinvestments.com",hq:"Riyadh, Saudi Arabia",inv:"Careem, Anghami, Homzmart",thesis:"Saudi sovereign-backed strategic fund; invests in creator/consumer platforms expanding in GCC; national AI ambition aligned",check:"$2M–$10M",fit:3,region:"Saudi"},
+  {type:"Intl",name:"Vision Ventures",url:"https://visionvc.com",hq:"Riyadh, Saudi Arabia",inv:"Foodics, Sary, Lean Technologies",thesis:"Saudi seed/Series A fund; backs scalable digital platforms in fintech, SaaS, and marketplaces — Vision 2030 aligned",check:"$500K–$3M",fit:3,region:"Saudi"},
+  {type:"Intl",name:"Wa'ed Ventures (Aramco)",url:"https://waed.com.sa",hq:"Dhahran, Saudi Arabia",inv:"Cura, Nawah Scientific, SmartWater",thesis:"Aramco's entrepreneurship fund; AI and digital tech focus; backs platforms with Saudi national significance",check:"$250K–$2M",fit:2,region:"Saudi"},
+  {type:"Intl",name:"Saudi Aramco Energy Ventures (SAEV)",url:"https://saudiaramco.com",hq:"Dhahran, Saudi Arabia",inv:"Aurora Labs, Mito, Quobyte",thesis:"Tech-forward strategic corporate VC; less aligned to creator economy but high-value for partnerships in GCC market entry",check:"$1M–$5M",fit:2,region:"Saudi"},
+
+  // ═══════════════════ INTERNATIONAL — INDIA ═══════════════════
+  {type:"Intl",name:"Sequoia Capital India (Peak XV)",url:"https://peakxv.com",hq:"Bengaluru, India",inv:"Byju's, Meesho, Razorpay",thesis:"Independent from US Sequoia; backs India-first consumer platforms and creator tools; massive influencer creator economy in India",check:"$500K–$3M",fit:4,region:"India"},
+  {type:"Intl",name:"Accel India",url:"https://accel.com/india",hq:"Bengaluru, India",inv:"Flipkart, Freshdesk, Swiggy",thesis:"Accel's India arm; backs consumer internet and SaaS platforms scaling in South Asia; creator economy rising fast",check:"$500K–$3M",fit:4,region:"India"},
+  {type:"Intl",name:"Kalaari Capital",url:"https://kalaari.com",hq:"Bengaluru, India",inv:"Dream11, Myntra, Urban Ladder",thesis:"India-focused early VC; strong creator economy portfolio including gaming/entertainment; SPRK's data layer India expansion fit",check:"$500K–$3M",fit:3,region:"India"},
+  {type:"Intl",name:"Lightspeed India",url:"https://lsvp.com/india",hq:"New Delhi, India",inv:"Oyo, ShareChat, Udaan",thesis:"Lightspeed's India office; backs digital content and creator platforms; ShareChat (India's social media) precedent relevant",check:"$500K–$3M",fit:4,region:"India"},
+  {type:"Intl",name:"Matrix Partners India",url:"https://matrixpartners.in",hq:"Mumbai, India",inv:"OYO, Dailyhunt, Ola",thesis:"Consumer digital platforms with India-scale ambition; daily content consumption platform investments = SPRK.com alignment",check:"$500K–$3M",fit:3,region:"India"},
+  {type:"Intl",name:"Elevation Capital",url:"https://elevationcapital.com",hq:"New Delhi, India",inv:"Meesho, Urban Company, ShareChat",thesis:"Backs culturally relevant Indian consumer platforms; ShareChat and Meesho show creator commerce and cultural media chops",check:"$500K–$3M",fit:3,region:"India"},
+
+  // ═══════════════════ INTERNATIONAL — ASIA (CHINA, SEA, JAPAN) ═══════════════════
+  {type:"Intl",name:"SoftBank Vision Fund",url:"https://visionfund.com",hq:"Tokyo / London",inv:"WeWork, Grab, DoorDash",thesis:"Massive bets on AI and platform dominance; backs creator economy infrastructure at scale; open to US-based cultural tech",check:"$10M–$100M",fit:3,region:"Asia"},
+  {type:"Intl",name:"Tencent Investments",url:"https://tencent.com",hq:"Shenzhen, China",inv:"Epic Games, Snap, Spotify",thesis:"Strategic global media and gaming bets; Snap and Spotify stakes show Western creator platform appetite; culture + data alignment",check:"$5M–$50M",fit:4,region:"Asia"},
+  {type:"Intl",name:"Alibaba Entrepreneurs Fund",url:"https://alibabaentrepreneursfund.com",hq:"Hong Kong",inv:"Trendyol, Lazada, Paytm",thesis:"E-commerce and marketplace platform backer; global commerce scale with creator/merchant tools — SPRK Pavilion strategic",check:"$1M–$10M",fit:3,region:"Asia"},
+  {type:"Intl",name:"GGV Capital",url:"https://ggvc.com",hq:"San Francisco / Shanghai",inv:"Xiaohongshu (RED), Slack, Airbnb",thesis:"US-China bridge fund; Xiaohongshu (China's creator-commerce platform) investment makes SPRK's creator commerce pitch extremely legible",check:"$1M–$5M",fit:5,region:"Asia"},
+  {type:"Intl",name:"Qiming Venture Partners",url:"https://qimingvc.com",hq:"Shanghai, China",inv:"Meituan, Xiaomi, BioBay",thesis:"China-first VC expanding to US cross-border; consumer and media platforms; less creator focus but high check capacity",check:"$1M–$5M",fit:2,region:"Asia"},
+  {type:"Intl",name:"DCM Ventures",url:"https://dcm.com",hq:"Menlo Park + Tokyo",inv:"LINE, Twitter, Kakao",thesis:"US-Asia bridge with messaging/social platform roots; LINE and Kakao stakes = deep creator messaging platform alignment",check:"$1M–$5M",fit:3,region:"Asia"},
+  {type:"Intl",name:"500 TukTuks (500 Global Southeast Asia)",url:"https://500.co/sea",hq:"Bangkok / Singapore",inv:"Grab, Carousell, Omise",thesis:"SE Asia-focused seed with creator tool and marketplace portfolio; culturally diverse creator community relevant to SPRK data layer",check:"$100K–$500K",fit:3,region:"Asia"},
+  {type:"Intl",name:"Golden Gate Ventures",url:"https://goldengate.vc",hq:"Singapore",inv:"Carousell, 99.co, HappyFresh",thesis:"Southeast Asia consumer marketplace seed investor; SPRK's culturally fluent data layer applicable to SE Asian creator market",check:"$250K–$1.5M",fit:3,region:"Asia"},
+
+  // ═══════════════════ ADDITIONAL STRONG US VCs ═══════════════════
+  {type:"VC",name:"Tiger Global Management",url:"https://tigerglobal.com",hq:"New York, NY",inv:"Spotify, Stripe, ByteDance",thesis:"High-velocity growth equity; backs proven consumer platforms with strong metrics; less seed-stage but key for Series A+",check:"$5M–$50M",fit:3,region:"US"},
+  {type:"VC",name:"Coatue Management",url:"https://coatue.com",hq:"New York, NY",inv:"TikTok, Snap, Lyft",thesis:"TikTok early backer with deep creator economy thesis; platform-first investor for culturally resonant consumer apps",check:"$3M–$20M",fit:4,region:"US"},
+  {type:"VC",name:"Drive Capital",url:"https://drivecapital.com",hq:"Columbus, OH",inv:"Root Insurance, Duolingo, Forge",thesis:"Midwest-focused VC — geographically aligned to SPRK's Kansas City base; backs B2B SaaS and consumer platforms from flyover",check:"$1M–$5M",fil:4,fit:4,region:"US"},
+  {type:"VC",name:"Lewis & Clark Ventures",url:"https://lewisandclarkvp.com",hq:"St. Louis, MO",inv:"Windy City Bulls (portfolio), various Midwest SaaS",thesis:"Midwest seed fund; backs founder-led businesses in underserved geographies — KC-based SPRK founder story resonates",check:"$250K–$1M",fit:4,region:"US"},
+  {type:"VC",name:"Mercury Fund",url:"https://mercuryfund.com",hq:"Houston, TX",inv:"Sievert Larsen, SailPoint, Dosh",thesis:"Backs startups in underserved US tech markets (South/Midwest); Kansas City SPRK origins = strong regional partner case",check:"$500K–$2M",fit:4,region:"US"},
+  {type:"VC",name:"Silverton Partners",url:"https://silvertonpartners.com",hq:"Austin, TX",inv:"Dosh, LiquidPower, Pinpoint",thesis:"Texas-based early-stage VC; backs consumer and SaaS platforms scaling out of emerging US tech hubs",check:"$500K–$2M",fit:3,region:"US"},
+  {type:"VC",name:"Crosslink Capital",url:"https://crosslinkcapital.com",hq:"San Francisco, CA",inv:"Pandora, LendingClub, HipChat",thesis:"Consumer internet and media platform seed investor; Pandora roots show strong audio/creator media alignment",check:"$500K–$2M",fit:3,region:"US"},
+  {type:"VC",name:"Upfront Ventures",url:"https://upfront.com",hq:"Los Angeles, CA",inv:"TuneIn, Maker Studios, Ring",thesis:"LA-rooted VC deeply tied to entertainment and creator economy; Maker Studios (YouTube MCN) precedent perfect for SPRK",check:"$500K–$3M",fit:5,region:"US"},
+  {type:"VC",name:"Reach Capital",url:"https://reachcapital.com",hq:"San Francisco, CA",inv:"Coursera, Duolingo, Ellevation",thesis:"EdTech-focused; SPRK's upskilling resource center (5th product) is directly in thesis; backs culturally inclusive learning tools",check:"$500K–$2M",fit:4,region:"US"},
+  {type:"VC",name:"Owl Ventures",url:"https://owlvc.com",hq:"San Francisco, CA",inv:"Kahoot, Duolingo, Masterclass",thesis:"Largest dedicated EdTech VC; Masterclass investment aligns with SPRK's creator-education upskilling product",check:"$1M–$5M",fit:4,region:"US"},
+  {type:"VC",name:"Collaborative Fund",url:"https://collabfund.com",hq:"New York, NY",inv:"Reddit, Kickstarter, Headspace",thesis:"Backs companies benefiting people and the planet; creator economy platforms enabling democratic access to income = mission fit",check:"$250K–$1M",fit:4,region:"US"},
+  {type:"VC",name:"Gradient Ventures (Google AI Fund)",url:"https://gradient.google",hq:"Mountain View, CA",inv:"Labelbox, Standard AI, Cogito",thesis:"Google's AI-first early-stage fund; seed-stage AI companies with potential Google product synergies — SPRK AI data layer",check:"$1M–$3M",fit:3,region:"US"},
+  {type:"VC",name:"True Ventures",url:"https://trueventures.com",hq:"San Francisco, CA",inv:"Fitbit, Peloton, Ring",thesis:"Community-first investors; backs founders disrupting large consumer categories with platform plays",check:"$1M–$3M",fit:3,region:"US"},
+  {type:"VC",name:"Obvious Ventures",url:"https://obvious.com",hq:"San Francisco, CA",inv:"Medium, Impossible Foods, Ginger",thesis:"Ev Williams' fund — Twitter/Medium roots make creator economy and content platform investments core to their DNA",check:"$500K–$2M",fit:5,region:"US"},
+  {type:"VC",name:"Kapor Capital",url:"https://kaporcapital.com",hq:"Oakland, CA",inv:"Bitly, Piazza, Managed by Q",thesis:"Backs tech companies closing gaps of access; diversity-forward mandate aligned with SPRK's Black creator ecosystem mission",check:"$250K–$1M",fit:4,region:"US"},
+  {type:"VC",name:"Backstage Capital",url:"https://backstagecapital.com",hq:"Los Angeles, CA",inv:"Wonderschool, Partake Foods, Mahmee",thesis:"Arlan Hamilton's firm backing underrepresented founders; SPRK's Black creator economy mission = direct alignment to Backstage thesis",check:"$25K–$500K",fit:5,region:"US"},
+  {type:"VC",name:"NapoleonCat / Base Ventures",url:"https://basevc.com",hq:"San Francisco, CA",inv:"Mayvenn (Black founder), Blavity, Walker & Company",thesis:"Backs Black founders in tech and creator economy; Blavity investment is direct cultural media precedent for SPRK",check:"$100K–$500K",fit:5,region:"US"},
+  {type:"Intl",name:"Flat6Labs",url:"https://flat6labs.com",hq:"Cairo / UAE / Saudi Arabia",inv:"Swvl, Elmenus, Koinz",thesis:"MENA's largest accelerator/VC with UAE + Saudi presence; backs early digital platforms; MENA creator and media platform bridgehead",check:"$100K–$500K",fit:3,region:"UAE"},
+  {type:"Intl",name:"Antler (UAE / India)",url:"https://antler.co",hq:"Singapore / Dubai / Mumbai",inv:"Portr, Finmo, Marble",thesis:"Global pre-company VC with UAE and India offices; backs founders before product; SPRK regional expansion partnership potential",check:"$100K–$500K",fit:3,region:"UAE"},
+  {type:"VC",name:"Slow Capital (creator focus)",url:"https://slow.co",hq:"San Francisco, CA",inv:"Patreon, Substack, Cameo",thesis:"Cameo backer showing creator marketplace conviction; Slow is the purest creator-economy seed fund outside a16z",check:"$250K–$1M",fit:5,region:"US"},
+];
+
+// Remove duplicate (Slow Ventures appears twice)
+const seen = new Set();
+const uniqueInvestors = investors.filter(inv => {
+  const key = inv.name;
+  if (seen.has(key)) return false;
+  seen.add(key);
+  return true;
+});
+
+let filtered = [...uniqueInvestors];
+let sortCol = 'fit';
+let sortDir = -1; // -1 = desc
+
+function renderTable() {
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = '';
+
+  document.getElementById('filtered-count').textContent = filtered.length;
+  document.getElementById('showing-count').textContent = filtered.length;
+  document.getElementById('fit5-count').textContent = uniqueInvestors.filter(i => i.fit === 5).length;
+  document.getElementById('fit4-count').textContent = uniqueInvestors.filter(i => i.fit === 4).length;
+
+  if (filtered.length === 0) {
+    document.getElementById('no-results').style.display = 'block';
+    document.querySelector('.table-wrap table').style.display = 'none';
+    updateTrackerStats();
+    return;
+  }
+  document.getElementById('no-results').style.display = 'none';
+  document.querySelector('.table-wrap table').style.display = '';
+
+  filtered.forEach((inv, i) => {
+    const contacts = getAllContacts(inv.name);
+    const numContacts = contacts.length || 1;
+    const rowspan = numContacts + 1; // +1 for the Add Contact row
+
+    contacts.forEach((contact, cidx) => {
+      const isFirst = cidx === 0;
+      const isLast = cidx === contacts.length - 1;
+      const cells = buildContactRow(inv, contact, cidx, isFirst, rowspan, isLast);
+      const tr = document.createElement('tr');
+      tr.className = isFirst ? 'firm-first-row' : (isLast ? 'firm-last-row' : 'firm-contact-row');
+
+      let html = '';
+      if (isFirst) {
+        // First row: include all firm columns with rowspan
+        html += `<td class="td-num" rowspan="${rowspan}" style="vertical-align:top;padding-top:12px">${i + 1}</td>`;
+        html += `<td rowspan="${rowspan}" style="vertical-align:top;padding-top:12px"><span class="type-badge type-${inv.type.toLowerCase()}">${inv.type}</span></td>`;
+        html += `<td class="name-cell" rowspan="${rowspan}" style="vertical-align:top;padding-top:12px"><a href="${inv.url}" target="_blank" rel="noopener">${inv.name}</a></td>`;
+        html += `<td class="hq-cell" rowspan="${rowspan}" style="vertical-align:top;padding-top:12px">${inv.hq}</td>`;
+        html += `<td class="inv-cell" rowspan="${rowspan}" style="vertical-align:top;padding-top:12px">${inv.inv}</td>`;
+        html += `<td class="thesis-cell" rowspan="${rowspan}" style="vertical-align:top;padding-top:12px">${inv.thesis}</td>`;
+        html += `<td class="check-cell" rowspan="${rowspan}" style="vertical-align:top;padding-top:12px">${inv.check}</td>`;
+        html += `<td class="fit-cell" rowspan="${rowspan}" style="vertical-align:top;padding-top:12px"><span class="fit-dot fit-${inv.fit}">${inv.fit} ${'★'.repeat(inv.fit)}${'☆'.repeat(5 - inv.fit)}</span></td>`;
+      }
+
+      // Contact columns (repeated per contact)
+      html += `<td style="vertical-align:top;padding-top:8px;min-width:140px">${cells.nameCell}</td>`;
+      html += `<td style="vertical-align:top;padding-top:8px;min-width:130px">${cells.titleCell}</td>`;
+      html += `<td style="vertical-align:top;padding-top:8px">${cells.hookCell}</td>`;
+      html += `<td style="vertical-align:middle;min-width:150px">${cells.emailCell}</td>`;
+      html += `<td class="check-cell-track">${cells.verifiedCell}</td>`;
+      html += `<td class="check-cell-track">${cells.sentCell}</td>`;
+      html += `<td class="file-cell">${cells.fileCell}</td>`;
+
+      tr.innerHTML = html;
+      tbody.appendChild(tr);
+    });
+
+    // If no contacts, show one empty editable row
+    if (contacts.length === 0) {
+      const tr = document.createElement('tr');
+      tr.className = 'firm-last-row';
+      const iN = inv.name.replace(/'/g, "\\'");
+      const uid = 'fu_' + inv.name.replace(/[^a-z0-9]/gi,'_').substring(0,18) + '_0';
+      tr.innerHTML = `
+        <td class="td-num" rowspan="2" style="vertical-align:top;padding-top:12px">${i + 1}</td>
+        <td rowspan="2" style="vertical-align:top;padding-top:12px"><span class="type-badge type-${inv.type.toLowerCase()}">${inv.type}</span></td>
+        <td class="name-cell" rowspan="2" style="vertical-align:top;padding-top:12px"><a href="${inv.url}" target="_blank" rel="noopener">${inv.name}</a></td>
+        <td class="hq-cell" rowspan="2" style="vertical-align:top;padding-top:12px">${inv.hq}</td>
+        <td class="inv-cell" rowspan="2" style="vertical-align:top;padding-top:12px">${inv.inv}</td>
+        <td class="thesis-cell" rowspan="2" style="vertical-align:top;padding-top:12px">${inv.thesis}</td>
+        <td class="check-cell" rowspan="2" style="vertical-align:top;padding-top:12px">${inv.check}</td>
+        <td class="fit-cell" rowspan="2" style="vertical-align:top;padding-top:12px"><span class="fit-dot fit-${inv.fit}">${inv.fit} ${'★'.repeat(inv.fit)}${'☆'.repeat(5 - inv.fit)}</span></td>
+        <td style="vertical-align:top;padding-top:8px"><input class="inline-field" type="text" placeholder="Contact name…" value="${lsGet(inv.name,'cname',0,'').replace(/"/g,'&quot;')}" oninput="lsSet('${iN}','cname',0,this.value)" style="min-width:120px;font-weight:600"></td>
+        <td style="vertical-align:top;padding-top:8px"><input class="inline-field" type="text" placeholder="Title…" value="${lsGet(inv.name,'ctitle',0,'').replace(/"/g,'&quot;')}" oninput="lsSet('${iN}','ctitle',0,this.value)" style="min-width:130px;color:var(--muted);font-size:11px"></td>
+        <td style="vertical-align:top;padding-top:8px"><textarea class="inline-field" placeholder="Personal hook…" oninput="lsSet('${iN}','chook',0,this.value)" style="min-width:180px;height:54px;resize:vertical;font-size:11px">${lsGet(inv.name,'chook',0,'').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea></td>
+        <td style="vertical-align:middle"><input class="inline-field" type="text" placeholder="Add email…" value="${lsGet(inv.name,'email',0,'').replace(/"/g,'&quot;')}" oninput="lsSet('${iN}','email',0,this.value)" style="min-width:150px"></td>
+        <td class="check-cell-track"><input type="checkbox" class="tracker-check" ${lsGetBool(inv.name,'verified',0)?'checked':''} onchange="lsSetBool('${iN}','verified',0,this.checked)"></td>
+        <td class="check-cell-track"><input type="checkbox" class="tracker-check" ${lsGetBool(inv.name,'emailSent',0)?'checked':''} onchange="lsSetBool('${iN}','emailSent',0,this.checked)"></td>
+        <td class="file-cell"><label class="upload-label" for="${uid}">+ File</label><input type="file" id="${uid}" accept=".html,.htm" style="display:none" onchange="handleFileUpload(this,'${iN}',0)"></td>
+      `;
+      tbody.appendChild(tr);
+    }
+
+    // Add Contact row (always last)
+    const addTr = document.createElement('tr');
+    addTr.className = 'firm-add-row';
+    addTr.innerHTML = `<td colspan="7" style="text-align:right;padding-top:3px;padding-bottom:8px"><button class="add-contact-btn" onclick="addContact('${inv.name.replace(/'/g,"\'")}')">+ Add Contact</button></td>`;
+    tbody.appendChild(addTr);
+  });
+
+  updateTrackerStats();
+}
+
+function applyFilters() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const typeF = document.getElementById('filter-type').value;
+  const fitF = document.getElementById('filter-fit').value;
+  const regionF = document.getElementById('filter-region').value;
+  const statusF = document.getElementById('filter-status') ? document.getElementById('filter-status').value : '';
+
+  filtered = uniqueInvestors.filter(inv => {
+    const matchQ = !q || [inv.name, inv.thesis, inv.inv, inv.hq].some(f => f.toLowerCase().includes(q));
+    const matchType = !typeF || inv.type === typeF;
+    const matchFit = !fitF || inv.fit === parseInt(fitF);
+    const matchRegion = !regionF || inv.region === regionF;
+    let matchStatus = true;
+    if (statusF === 'sent') matchStatus = lsGetBool(inv.name, 'emailSent', 0);
+    if (statusF === 'not_sent') matchStatus = !lsGetBool(inv.name, 'emailSent', 0);
+    if (statusF === 'verified') matchStatus = lsGetBool(inv.name, 'verified', 0);
+    return matchQ && matchType && matchFit && matchRegion && matchStatus;
+  });
+
+  doSort();
+  renderTable();
+}
+
+function sortBy(col) {
+  if (sortCol === col) {
+    sortDir *= -1;
+  } else {
+    sortCol = col;
+    sortDir = col === 'fit' ? -1 : 1;
+  }
+  doSort();
+  renderTable();
+}
+
+function doSort() {
+  filtered.sort((a, b) => {
+    let va = a[sortCol], vb = b[sortCol];
+    if (typeof va === 'string') va = va.toLowerCase();
+    if (typeof vb === 'string') vb = vb.toLowerCase();
+    if (va < vb) return -sortDir;
+    if (va > vb) return sortDir;
+    return 0;
+  });
+}
+
+function resetFilters() {
+  document.getElementById('search').value = '';
+  document.getElementById('filter-type').value = '';
+  document.getElementById('filter-fit').value = '';
+  document.getElementById('filter-region').value = '';
+  if (document.getElementById('filter-status')) document.getElementById('filter-status').value = '';
+  applyFilters();
+}
+
+function exportCSV(mode) {
+  const data = mode === 'all' ? uniqueInvestors : filtered;
+  const headers = ['#','Type','Name','Website','HQ','Region','Top 3 Investments','Thesis','Avg Seed Check 2025-26','SPRK Fit Score','Contact Name','Title','Email','Verified','Sent'];
+  const rows = data.map((inv, i) => [
+    i + 1, inv.type, inv.name, inv.url, inv.hq, inv.region,
+    `"${inv.inv}"`, `"${inv.thesis}"`, inv.check, inv.fit,
+    `"${(contactData[inv.name]||[{name:''}])[0].name}"`,
+    `"${(contactData[inv.name]||[{title:''}])[0].title||''}"`,
+    `"${lsGet(inv.name,'email',0,(contactData[inv.name]||[{email:''}])[0].email||'')}"`,
+    lsGetBool(inv.name,'verified',0)?'Yes':'No',
+    lsGetBool(inv.name,'emailSent',0)?'Yes':'No'
+  ]);
+  const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `SPRK_Investors_${mode}_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+}
+
+const contactData = {
+  'Andreessen Horowitz (a16z)': [
+    {name:'Anish Acharya',title:'General Partner, Consumer',linkedin:'https://linkedin.com/in/anishacharya',email:'',hook:'Anish recently wrote about how AI consumer apps are charging $200+/month and why advertising is essential to reaching billions of users — SPRK\'s consented cultural data layer and creator-first ad model maps directly to this thesis.'},
+    {name:'Megan Holston-Alexander',title:'Partner, Cultural Leadership Fund',linkedin:'https://linkedin.com/in/meganholstonalexander',email:'',hook:'Megan leads the CLF and has been vocal about investing at the intersection of Black culture and tech — SPRK\'s founding creator base and cultural intelligence layer is exactly that intersection.'},
+    {name:'Chris Lyons',title:'General Partner, Cultural Leadership Fund (co-founder)',linkedin:'https://linkedin.com/in/christophermlyons',email:'',hook:'Chris co-founded the CLF and has championed cultural tech as a category — SPRK\'s consented cultural data corpus for AI models is the infrastructure play he\'s been describing.'}
+  ],
+  'Lightspeed Venture Partners': [
+    {name:'Claire Zau',title:'Partner, Early-Stage & New Media',linkedin:'https://linkedin.com/in/clairezau',email:'',hook:'Claire just joined Lightspeed as their first creator-partner (350K followers) specifically to build their creator-led investing strategy — she\'s publicly said she wants to back infrastructure that empowers creators, which is SPRK\'s core thesis.'},
+    {name:'Josh Machiz',title:'CMO / Partner',linkedin:'https://linkedin.com/in/joshmachiz',email:'',hook:'Josh has been outspoken that VC firms need to think like media companies — SPRK is building the infrastructure that makes that true for creators at scale.'}
+  ],
+  'Seven Seven Six (776)': [
+    {name:'Alexis Ohanian',title:'General Partner & Founder',linkedin:'https://linkedin.com/in/alexisohanian',email:'contact@sevensevensix.com',hook:'Alexis recently posted about how to write a great cold email — \'Short. Clear. Useful. Grateful.\' — and has been one of the loudest voices for creator ownership and equity in the attention economy. SPRK is that thesis, built.'}
+  ],
+  'Bond Capital': [
+    {name:'Mary Meeker',title:'General Partner & Founder',linkedin:'https://linkedin.com/in/mary-meeker-5823ba48',email:'info@bondcap.com',hook:'Mary\'s 2025 AI Trends report highlighted the gap between AI model training data and authentic cultural content — SPRK\'s consented corpus is the exact solution she identified as missing.'},
+    {name:'Noah Knauf',title:'General Partner',linkedin:'https://linkedin.com/company/bondcap',email:'info@bondcap.com',hook:'Bond backed Passes and Substack — SPRK is the infrastructure layer that sits above both, connecting creators to brands and AI models through a single owned ecosystem.'}
+  ],
+  'New Enterprise Associates (NEA)': [
+    {name:'Vanessa Larco',title:'Former Partner (consumer focus)',linkedin:'https://linkedin.com/in/vanessalarco',email:'',hook:'Vanessa was NEA\'s consumer lead and has been vocal about the creator economy\'s infrastructure gap — worth a warm intro through her network.'},
+    {name:'Luke Pappas',title:'Partner',linkedin:'https://linkedin.com/in/luke-pappas-78ba5699',email:'',hook:'Luke focuses on consumer and media at NEA — SPRK\'s beehiiv-adjacent creator SaaS model with an AI data moat is directly in his wheelhouse.'}
+  ],
+  'Founders Fund': [
+    {name:'Lauren Gross',title:'Partner',linkedin:'https://linkedin.com/company/the-founders-fund',email:'',hook:'Founders Fund backed Spotify early — SPRK is building what Spotify did for music, but for all creators across culture, community, and commerce with an AI data layer.'}
+  ],
+  'Sequoia Capital': [
+    {name:'Roelof Botha',title:'Managing Partner',linkedin:'https://linkedin.com/in/roelofbotha',email:'',hook:'Sequoia backed Captions and YouTube — SPRK is the infrastructure layer that connects creator production (Studio), distribution (.COM), and commerce (Pavilion) into one flywheel with an AI data moat.'}
+  ],
+  'Bessemer Venture Partners': [
+    {name:'Ken Chenault Jr.',title:'Partner, Consumer',linkedin:'https://linkedin.com/company/bessemer-venture-partners',email:'',hook:'Bessemer launched the Creator Collaborative in 2023 and has been investing in creator-built consumer businesses — SPRK is the infrastructure that makes every creator a media company, which is exactly what the Collaborative is looking for.'}
+  ],
+  'First Round Capital': [
+    {name:'Josh Kopelman',title:'Founding Partner',linkedin:'https://linkedin.com/in/jkopelman',email:'',hook:'Josh has been a seed-stage believer in marketplace and platform businesses since Uber and Square — SPRK\'s five-surface flywheel with a consented AI data moat is the next generation of that thesis.'},
+    {name:'Hayley Bay Barna',title:'Partner',linkedin:'https://linkedin.com/in/hbarna',email:'',hook:'Hayley is a consumer-focused partner and co-founder of Birchbox — she understands creator-brand relationships and the monetization gap SPRK is solving.'}
+  ],
+  'Lerer Hippeau': [
+    {name:'Ben Lerer',title:'Managing Partner',linkedin:'https://linkedin.com/company/lerer-hippeau',email:'',hook:'Ben co-founded Thrillist and Group Nine Media — he built a creator-first media company before the tools existed. SPRK is the infrastructure he would have wanted.'}
+  ],
+  'Inspired Capital': [
+    {name:'Alexa von Tobel',title:'Founding Managing Partner',linkedin:'https://linkedin.com/in/alexavontobel',email:'',hook:'Alexa backed ShopMy, which is creator commerce infrastructure — SPRK is the full-stack version: production, distribution, commerce, and AI data in one owned ecosystem.'}
+  ],
+  'Union Square Ventures (USV)': [
+    {name:'Rebecca Kaden',title:'General Partner',linkedin:'https://linkedin.com/in/rebecca-kaden',email:'',hook:'Rebecca focuses on networks and platforms at USV — SPRK\'s flywheel (Studio → .COM → Pavilion → YourSPRK → SPRK*AI) is a classic USV-style network effects play where every interaction makes the moat deeper.'},
+    {name:'Michael Mignano',title:'General Partner (newest)',linkedin:'https://linkedin.com/company/union-square-ventures',email:'',hook:'Michael just joined USV and is focused on immersive entertainment and creator platforms — SPRK\'s cultural intelligence layer and creator ownership model is directly aligned with his thesis.'}
+  ],
+  'General Catalyst': [
+    {name:'Hemant Taneja',title:'CEO & Managing Director',linkedin:'https://linkedin.com/in/hemanttaneja',email:'',hook:'Hemant has been writing about AI-enabled services transformation — SPRK\'s consented cultural data corpus is the missing training layer every AI model needs, and it\'s being built with creator consent and revenue share built in.'}
+  ],
+  'Benchmark': [
+    {name:'Peter Fenton',title:'General Partner',linkedin:'https://linkedin.com/in/peter-fenton-0b117',email:'',hook:'Benchmark backed Twitter and Instagram — SPRK is building the next-generation attention platform where creators own their audience and revenue, not the platform.'}
+  ],
+  'Index Ventures': [
+    {name:'Nina Achadjian',title:'Partner',linkedin:'https://linkedin.com/in/ninaachadjian',email:'',hook:'Index was an early backer of Patreon — SPRK is the infrastructure layer that takes creator monetization from subscription-only to a full five-surface ecosystem with AI data licensing on top.'}
+  ],
+  'Craft Ventures': [
+    {name:'David Sacks',title:'Co-Founder & General Partner',linkedin:'https://linkedin.com/in/davidsacks',email:'',hook:'David backed Agentio, the AI-powered creator ad platform — SPRK is the infrastructure layer Agentio needs to scale: a consented cultural data corpus, a creator-first ad marketplace, and a five-surface flywheel.'}
+  ],
+  'Night Ventures': [
+    {name:'Reed Duchscher',title:'CEO & Founder',linkedin:'https://linkedin.com/in/reedjd',email:'',hook:'Reed manages MrBeast and built Night as a next-gen creator management + venture studio — SPRK is the infrastructure play that turns every creator Night manages into a media company with owned revenue streams.'}
+  ],
+  'UTA Ventures': [
+    {name:'Ali Berman',title:'Partner & Co-Head of Creators',linkedin:'https://linkedin.com/in/alisonbarash',email:'',hook:'Ali co-leads UTA\'s creator division — SPRK\'s Pavilion marketplace and brand-to-creator deal flow is a direct complement to UTA\'s talent relationships and a new revenue layer for their roster.'}
+  ],
+  'Khosla Ventures': [
+    {name:'Ethan Choi',title:'Partner',linkedin:'https://linkedin.com/in/ethanchoi',email:'',hook:'Ethan has been writing about AI-first companies and founder-first investing — SPRK\'s consented cultural data corpus is the AI infrastructure play that no competitor can legally replicate, which is the kind of durable moat Khosla looks for.'}
+  ],
+  'Accel': [
+    {name:'Amit Kumar',title:'Partner, Consumer & Social',linkedin:'https://linkedin.com/company/accel',email:'',hook:'Accel backed Facebook and Spotify — SPRK is the infrastructure that sits at the intersection of both: a social-native creator platform with streaming-scale revenue share and an AI data moat.'}
+  ],
+  'Andreessen Horowitz Cultural Leadership Fund': [
+    {name:'Megan Holston-Alexander',title:'Partner, CLF',linkedin:'https://linkedin.com/in/meganholstonalexander',email:'compliance@a16z.com',hook:'The CLF\'s 2024 nonprofit partner spotlight focused on building the pipeline between Black cultural leaders and tech — SPRK\'s founding creator base and cultural intelligence layer is the commercial infrastructure that makes that pipeline permanent.'}
+  ],
+  'Y Combinator': [
+    {name:'Garry Tan',title:'President & CEO',linkedin:'https://linkedin.com/in/garrytan',email:'',hook:'YC\'s Fall 2026 RFS called for \'AI-Powered Consumer Products for 1 Billion People\' — SPRK\'s five-surface creator ecosystem with a consented AI data layer is exactly that product, built for the 50M active creators who don\'t yet make a living wage.'}
+  ],
+  'Alexis Ohanian (776)': [
+    {name:'Alexis Ohanian',title:'General Partner & Founder, 776',linkedin:'https://linkedin.com/in/alexisohanian',email:'contact@sevensevensix.com',hook:'Alexis has been the loudest VC voice for creator ownership and equity — his recent post on cold email etiquette (\'Short. Clear. Useful. Grateful.\') and his Beehiiv/Substack bets show he\'s actively building the creator infrastructure stack. SPRK is the missing piece.'}
+  ],
+  'Troy Carter (Q&A / Venice Music)': [
+    {name:'Troy Carter',title:'Founder & CEO, Venice Music / Q&A',linkedin:'https://linkedin.com/in/troy-carter-20928774',email:'',hook:'Troy recently posted about telling artists to be authentic and then realizing the platforms weren\'t built for authenticity — SPRK is the platform built from that realization, paying creators like owners with consented data rights.'}
+  ],
+  'Ev Williams (Obvious Ventures)': [
+    {name:'Ev Williams',title:'Co-Founder, Obvious Ventures / Medium / Twitter',linkedin:'https://linkedin.com/in/evwilliams',email:'',hook:'Ev built Medium to give writers ownership of their audience and revenue — SPRK is that thesis extended to every creator type, with a five-surface ecosystem and an AI data moat that Medium never had.'}
+  ],
+  'Nas (QueensBridge Venture Partners)': [
+    {name:'Nas (Nasir Jones)',title:'Founder, QueensBridge Venture Partners',linkedin:'https://linkedin.com/in/nas-jones',email:'',hook:'Nas has been one of the most active celebrity VCs in consumer and fintech — SPRK\'s creator-first model pays creators like owners, which is the economic equity play he\'s been backing across his portfolio.'}
+  ],
+  'Jay Brown (Roc Nation)': [
+    {name:'Jay Brown',title:'Co-Founder & President, Roc Nation',linkedin:'https://linkedin.com/in/jay-brown-roc-nation',email:'',hook:'Roc Nation has been building the creator economy infrastructure for music for 15 years — SPRK extends that model to all creators with a five-surface ecosystem and a consented cultural data layer that every AI model will need.'}
+  ],
+  'CAA Ventures (Creative Artists Agency)': [
+    {name:'Michael Yanover',title:'Head of Business Development, CAA',linkedin:'https://linkedin.com/company/caa',email:'',hook:'CAA backed Luminary and Thuzio — SPRK\'s Pavilion marketplace and brand-to-creator deal flow is a direct complement to CAA\'s talent relationships and a new revenue layer for their roster.'}
+  ],
+  'GGV Capital': [
+    {name:'Jeff Richards',title:'Managing Partner',linkedin:'https://linkedin.com/in/jeffrichards',email:'',hook:'GGV backed Xiaohongshu (China\'s creator-commerce platform) and Poshmark — SPRK is the US-native version of that creator-commerce flywheel with an AI data moat built in.'}
+  ],
+  'Upfront Ventures': [
+    {name:'Mark Suster',title:'Managing Partner',linkedin:'https://linkedin.com/in/marksuster',email:'',hook:'Mark backed Maker Studios (sold to Disney for $675M) and TuneIn — he\'s been a believer in creator-first media infrastructure since before it was a category. SPRK is the next generation of that thesis with an AI data moat.'}
+  ],
+  'Obvious Ventures': [
+    {name:'James Joaquin',title:'Co-Founder & Partner',linkedin:'https://linkedin.com/in/jamesjoaquin',email:'',hook:'Obvious invests in \'world positive\' companies reimagining trillion-dollar industries — SPRK\'s creator-first model is world positive by design: paying creators like owners while building the cultural intelligence layer every AI model needs.'},
+    {name:'Kahini Shah',title:'Partner',linkedin:'https://linkedin.com/in/kahinimshah',email:'',hook:'Kahini focuses on world positive consumer tech at Obvious — SPRK\'s consented data model and creator revenue share is the ethical AI data infrastructure play she\'s been looking for.'}
+  ],
+  'Backstage Capital': [
+    {name:'Arlan Hamilton',title:'Founder & Managing Partner',linkedin:'https://linkedin.com/in/arlanhamilton',email:'ARLAN@BackstageCapital.com',hook:'Arlan has been vocal about backing underrepresented founders and building economic equity — SPRK\'s founding creator base is diverse by design, and the platform pays creators like owners, which is the economic equity play Backstage was built to fund.'}
+  ],
+  'Base Ventures': [
+    {name:'Erik Moore',title:'Founder & Managing Partner',linkedin:'https://linkedin.com/in/erikmoore',email:'',hook:'Base Ventures backed Blavity and Mayvenn — both Black-founded consumer platforms with creator-adjacent models. SPRK\'s founding creator base and cultural intelligence layer is the infrastructure play that makes those platforms more valuable.'}
+  ],
+  'Slow Capital': [
+    {name:'Sam Lessin',title:'General Partner & Co-Founder',linkedin:'https://linkedin.com/in/wlessin',email:'',hook:'Sam backed Patreon, Substack, and Cameo — the three pillars of creator monetization. SPRK is the infrastructure layer that sits above all three: one ecosystem, five surfaces, consented AI data, and creator ownership built in.'}
+  ],
+  'Initialized Capital': [
+    {name:'Garry Tan',title:'Co-Founder (now YC CEO)',linkedin:'https://linkedin.com/in/garrytan',email:'',hook:'Garry co-founded Initialized and backed Reddit and Coinbase — both platforms where community ownership was the thesis. SPRK is that thesis for the creator economy.'}
+  ],
+  'Spark Capital': [
+    {name:'Nabeel Hyatt',title:'General Partner',linkedin:'https://linkedin.com/in/nabeelhyatt',email:'',hook:'Nabeel led Spark\'s investment in Twitter and Tumblr — both creator-native platforms. SPRK is the infrastructure that takes the creator economy from platform-dependent to creator-owned.'}
+  ],
+  'Slow Ventures': [
+    {name:'Sam Lessin',title:'General Partner & Co-Founder',linkedin:'https://linkedin.com/in/wlessin',email:'',hook:'Sam\'s Slow Creator Fund is specifically focused on the creator economy — SPRK\'s five-surface ecosystem with consented AI data licensing is the infrastructure play that makes every creator in his portfolio more valuable.'}
+  ],
+  'Unusual Ventures': [
+    {name:'John Vrionis',title:'Founder & Managing Partner',linkedin:'https://linkedin.com/in/johnvrionis',email:'',hook:'John has been writing about the importance of product-market fit playbooks for technical founders — SPRK has a 12-week bootstrap to live product demo, MVP spec, full proforma, Delaware C-Corp, and TM filed, all solo. That\'s the PMF signal he looks for.'}
+  ],
+  'Freestyle Capital': [
+    {name:'Jenny Lefcourt',title:'General Partner',linkedin:'https://linkedin.com/in/jennylefcourt',email:'',hook:'Jenny was an early Patreon backer at Freestyle — SPRK is the infrastructure layer that takes creator monetization from subscription-only to a full five-surface ecosystem with AI data licensing on top.'}
+  ],
+  'SignalFire': [
+    {name:'Josh Constine',title:'Venture Partner, Consumer',linkedin:'https://linkedin.com/in/joshconstine',email:'',hook:'Josh spent 8 years at TechCrunch covering the creator economy before joining SignalFire — he\'s been writing about creator infrastructure gaps since before SPRK existed. His pitch strategy content is directly aligned with what SPRK is building.'}
+  ],
+  'Redpoint Ventures': [
+    {name:'Jacob Effron',title:'Managing Director',linkedin:'https://linkedin.com/in/jacobeffron',email:'',hook:'Redpoint has been investing in AI apps and consumer platforms — SPRK\'s consented cultural data corpus is the AI infrastructure play that sits upstream of every consumer AI product they\'re backing.'}
+  ],
+  'Thrive Capital': [
+    {name:'Joshua Kushner',title:'Founder & Managing Partner',linkedin:'https://linkedin.com/in/joshua-kushner-711b45230',email:'',hook:'Josh backed Instagram and Spotify — SPRK is the infrastructure that takes the creator economy from platform-dependent to creator-owned, with a five-surface flywheel and an AI data moat that neither Instagram nor Spotify has.'}
+  ],
+  'Norwest Venture Partners': [
+    {name:'Promod Haque',title:'Senior Managing Partner',linkedin:'https://linkedin.com/company/norwest-venture-partners',email:'',hook:'Norwest backed Spotify and Calm — both creator-adjacent platforms. SPRK is the infrastructure that connects creators to brands and AI models through a single owned ecosystem.'}
+  ],
+  'Greycroft': [
+    {name:'Alan Patricof',title:'Co-Founder',linkedin:'https://linkedin.com/in/alanpatricof',email:'',hook:'Greycroft backed Bumble and Venmo — both platforms where the network effect and creator/user ownership model was the thesis. SPRK is that thesis for the creator economy.'},
+    {name:'Dana Settle',title:'Co-Founder & Managing Partner',linkedin:'https://linkedin.com/in/danasetle',email:'',hook:'Dana focuses on consumer internet and creator economy at Greycroft — SPRK\'s five-surface ecosystem with consented AI data licensing is the infrastructure play she\'s been looking for.'}
+  ],
+  'Base10 Partners': [
+    {name:'Adeyemi Ajao',title:'Co-Founder & Managing Partner',linkedin:'https://linkedin.com/in/adeyemiajao',email:'',hook:'Ade recently spoke about investing \'for the 99%\' and automation that benefits the real economy — SPRK pays creators like owners and builds the cultural intelligence layer that every AI model needs, which is automation that benefits the 96% of creators who don\'t make a living wage.'}
+  ],
+  'Precursor Ventures': [
+    {name:'Charles Hudson',title:'Managing Partner & Founder',linkedin:'https://linkedin.com/in/chudson',email:'',hook:'Charles has been writing about solo founders and pre-seed investing — SPRK is a solo-founded, bootstrapped, default-alive company with a five-surface product demo, full proforma, and 45+ founding creators, all in 12 weeks.'}
+  ],
+  'Harlem Capital': [
+    {name:'Henri Pierre-Jacques',title:'Co-Founder & Managing Partner',linkedin:'https://linkedin.com/in/hpierrejacques',email:'',hook:'Henri has raised $225M+ backing diverse founders — SPRK\'s founding creator base is diverse by design, and the platform pays creators like owners, which is the economic equity play Harlem Capital was built to fund.'}
+  ],
+  'CRV (Charles River Ventures)': [
+    {name:'Reid Christian',title:'General Partner',linkedin:'https://linkedin.com/in/reidchristian',email:'',hook:'CRV backed Airtable and Dropbox — both infrastructure plays that unlocked new creator workflows. SPRK is the infrastructure that unlocks the entire creator economy: production, distribution, commerce, and AI data in one owned ecosystem.'}
+  ],
+  'Floodgate': [
+    {name:'Ann Miura-Ko',title:'Co-Founding Partner',linkedin:'https://linkedin.com/in/annmiurako',email:'',hook:'Ann backed Twitter and Lyft — both platforms where the network effect and creator/user ownership model was the thesis. SPRK is that thesis for the creator economy with an AI data moat built in.'}
+  ],
+  'Human Ventures': [
+    {name:'Heather Hartnett',title:'CEO & General Partner',linkedin:'https://linkedin.com/in/heatherhartnett',email:'',hook:'Heather focuses on human-centered consumer tech at Human Ventures — SPRK\'s creator-first model pays creators like owners and builds the cultural intelligence layer that every AI model needs, which is human-centered by design.'}
+  ],
+};
+
+// ── Tracker localStorage helpers ──
+function lsKey(invName, field, idx) {
+  return 'sprk_tracker_' + invName.replace(/[^a-z0-9]/gi,'_') + '_' + idx + '_' + field;
+}
+function lsGet(invName, field, idx, def) {
+  const v = localStorage.getItem(lsKey(invName, field, idx));
+  return v === null ? def : v;
+}
+function lsSet(invName, field, idx, val) {
+  localStorage.setItem(lsKey(invName, field, idx), val);
+  updateTrackerStats();
+  try { if(window.goatcounter && window.goatcounter.count) window.goatcounter.count({path:'/vc-tracker/'+field+'/'+invName,title:field+': '+invName,event:true}); } catch(e){}
+}
+function lsGetBool(invName, field, idx) {
+  return localStorage.getItem(lsKey(invName, field, idx)) === '1';
+}
+function lsSetBool(invName, field, idx, val) {
+  localStorage.setItem(lsKey(invName, field, idx), val ? '1' : '0');
+  updateTrackerStats();
+  try { if(window.goatcounter && window.goatcounter.count) window.goatcounter.count({path:'/vc-tracker/'+field+'/'+invName,title:field+': '+invName,event:true}); } catch(e){}
+}
+
+// Get all contacts for a firm: pre-populated + manually added
+function getAllContacts(invName) {
+  const base = contactData[invName] || [];
+  // Load manually added contacts from localStorage
+  const extraKey = 'sprk_extra_contacts_' + invName.replace(/[^a-z0-9]/gi,'_');
+  let extras = [];
+  try { extras = JSON.parse(localStorage.getItem(extraKey) || '[]'); } catch(e){}
+  return [...base, ...extras];
+}
+
+function getContactCount(invName) {
+  return getAllContacts(invName).length || 1; // minimum 1 (empty row)
+}
+
+function addContact(invName) {
+  const extraKey = 'sprk_extra_contacts_' + invName.replace(/[^a-z0-9]/gi,'_');
+  let extras = [];
+  try { extras = JSON.parse(localStorage.getItem(extraKey) || '[]'); } catch(e){}
+  extras.push({name:'', title:'', linkedin:'', email:'', hook:''});
+  localStorage.setItem(extraKey, JSON.stringify(extras));
+  renderTable();
+}
+
+function updateTrackerStats() {
+  let sent = 0, verified = 0;
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (!k || !k.startsWith('sprk_tracker_')) continue;
+    if (k.endsWith('_emailSent') && localStorage.getItem(k) === '1') sent++;
+    if (k.endsWith('_verified') && localStorage.getItem(k) === '1') verified++;
+  }
+  const se = document.getElementById('sent-count');
+  const ve = document.getElementById('verified-count');
+  if (se) se.textContent = sent;
+  if (ve) ve.textContent = verified;
+}
+
+function handleFileUpload(input, invName, idx) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    lsSet(invName, 'fileName', idx, file.name);
+    localStorage.setItem(lsKey(invName, 'fileData', idx), e.target.result);
+    renderTable();
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeFile(invName, idx) {
+  localStorage.removeItem(lsKey(invName, 'fileName', idx));
+  localStorage.removeItem(lsKey(invName, 'fileData', idx));
+  renderTable();
+}
+
+function buildContactRow(inv, contact, idx, isFirst, rowspan, isLast) {
+  const invName = inv.name;
+  const iN = invName.replace(/'/g, "\\'");
+
+  // Name cell (only in first row, with rowspan for firm columns)
+  // Contact name display
+  const liUrl = contact.linkedin ? ` <a href="${contact.linkedin}" target="_blank" rel="noopener" style="color:var(--sprk);font-size:10px;text-decoration:none;margin-left:3px;">↗</a>` : '';
+  const nameDisplay = contact.name
+    ? `<span class="editable-name">${contact.name}${liUrl}</span>`
+    : `<input class="inline-field" type="text" placeholder="Contact name…" value="" oninput="lsSet('${iN}','cname',${idx},this.value)" style="min-width:120px;font-weight:600">`;
+  const savedName = lsGet(invName, 'cname', idx, contact.name || '');
+  const nameCell = savedName && contact.name
+    ? `<span class="editable-name">${savedName}${liUrl}</span>`
+    : `<input class="inline-field" type="text" placeholder="Contact name…" value="${savedName.replace(/"/g,'&quot;')}" oninput="lsSet('${iN}','cname',${idx},this.value)" style="min-width:120px;font-weight:600">`;
+
+  // Title
+  const savedTitle = lsGet(invName, 'ctitle', idx, contact.title || '');
+  const titleCell = `<input class="inline-field" type="text" placeholder="Title…" value="${savedTitle.replace(/"/g,'&quot;')}" oninput="lsSet('${iN}','ctitle',${idx},this.value)" style="min-width:130px;color:var(--muted);font-size:11px">`;
+
+  // Hook
+  const savedHook = lsGet(invName, 'chook', idx, contact.hook || '');
+  const hookCell = `<textarea class="inline-field" placeholder="Personal hook…" oninput="lsSet('${iN}','chook',${idx},this.value)" style="min-width:180px;max-width:240px;height:54px;resize:vertical;font-size:11px;line-height:1.4">${savedHook.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea>`;
+
+  // Email
+  const savedEmail = lsGet(invName, 'email', idx, contact.email || '');
+  const emailCell = `<input class="inline-field" type="text" placeholder="Add email…" value="${savedEmail.replace(/"/g,'&quot;')}" oninput="lsSet('${iN}','email',${idx},this.value)" style="min-width:150px">`;
+
+  // Verified
+  const isVerified = lsGetBool(invName, 'verified', idx);
+  const verifiedCell = `<input type="checkbox" class="tracker-check" ${isVerified ? 'checked' : ''} onchange="lsSetBool('${iN}','verified',${idx},this.checked)" title="Address Verified">`;
+
+  // Sent
+  const isSent = lsGetBool(invName, 'emailSent', idx);
+  const sentCell = `<input type="checkbox" class="tracker-check" ${isSent ? 'checked' : ''} onchange="lsSetBool('${iN}','emailSent',${idx},this.checked)" title="Email Sent">`;
+
+  // File
+  const savedFile = lsGet(invName, 'fileName', idx, '');
+  const savedFileData = lsGet(invName, 'fileData', idx, '');
+  let fileCell = '';
+  if (savedFile && savedFileData) {
+    const shortName = savedFile.length > 16 ? savedFile.substring(0,14)+'…' : savedFile;
+    fileCell = `<a class="file-link" href="${savedFileData}" download="${savedFile}" title="${savedFile}">📎 ${shortName}</a><button class="remove-file-btn" onclick="removeFile('${iN}',${idx})" title="Remove file">✕</button>`;
+  } else {
+    const uid = 'fu_' + invName.replace(/[^a-z0-9]/gi,'_').substring(0,18) + '_' + idx;
+    fileCell = `<label class="upload-label" for="${uid}" title="Upload email HTML file">+ File</label><input type="file" id="${uid}" accept=".html,.htm" style="display:none" onchange="handleFileUpload(this,'${iN}',${idx})">`;
+  }
+
+  return { nameCell, titleCell, hookCell, emailCell, verifiedCell, sentCell, fileCell };
+}
+
+// Init
+sortCol = 'fit';
+sortDir = -1;
+doSort();
+renderTable();
+updateTrackerStats();
+</script>
+</body>
+</html>
