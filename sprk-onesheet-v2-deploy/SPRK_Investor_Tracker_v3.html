@@ -1124,10 +1124,24 @@ function moveToSharedTracker() {
     primaryContact:{ name:(inv.contacts&&inv.contacts[0]&&inv.contacts[0].name)||'', title:(inv.contacts&&inv.contacts[0]&&inv.contacts[0].title)||'', email:(inv.contacts&&inv.contacts[0]&&inv.contacts[0].email)||'', linkedinUrl:(inv.contacts&&inv.contacts[0]&&inv.contacts[0].linkedin)||'', personalHook:(inv.contacts&&inv.contacts[0]&&inv.contacts[0].hook)||'' }
   }));
   const payload = {version:2, exportedAt:new Date().toISOString(), customInvestors:snapshotCustomInvestors, extraContacts, fieldUpdates, attachments};
-  const transfer = 'SPRK_TRACKER_HANDOFF:' + JSON.stringify(payload);
-  if (transfer.length > 1900000) { alert('Your local migration snapshot is too large for one-click transfer. Use Export All 100 to preserve the data, then contact the team for assisted migration.'); return; }
-  window.name = transfer;
-  window.location.assign(sharedOrigin + '/?migration=ready');
+  const sharedWindow = window.open(sharedOrigin + '/?migration=ready', '_blank');
+  if (!sharedWindow) { alert('Please allow pop-ups for this site, then select Move to Shared Tracker again.'); return; }
+  let attempts = 0;
+  let retry = null;
+  const sendSnapshot = function(target) {
+    const destination = target || sharedWindow;
+    if (!destination || destination.closed) { clearInterval(retry); window.removeEventListener('message', receiveReady); return; }
+    destination.postMessage({ type:'SPRK_TRACKER_SNAPSHOT', payload }, sharedOrigin);
+    attempts++;
+    if (attempts >= 40) { clearInterval(retry); window.removeEventListener('message', receiveReady); }
+  };
+  const receiveReady = function(event) {
+    if (event.origin !== sharedOrigin || event.data?.type !== 'SPRK_SHARED_TRACKER_READY') return;
+    sendSnapshot(event.source);
+  };
+  window.addEventListener('message', receiveReady);
+  sendSnapshot();
+  retry = setInterval(sendSnapshot, 500);
 }
 
 // Get all contacts for a firm: pre-populated + manually added
