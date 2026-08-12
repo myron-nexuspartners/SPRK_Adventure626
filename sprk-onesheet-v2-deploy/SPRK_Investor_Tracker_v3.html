@@ -387,6 +387,33 @@
   .editable-name { font-weight: 600; font-size: 12px; }
   .editable-name a { color: var(--text); text-decoration: none; border-bottom: 1px dashed var(--border); }
   .editable-name a:hover { color: var(--sprk); }
+  /* ── Add Investor modal ── */
+  .modal-backdrop { position: fixed; inset: 0; z-index: 300; display: none; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 28px 16px; background: rgba(26,22,20,.48); backdrop-filter: blur(4px); }
+  .modal-backdrop.open { display: flex; }
+  .investor-modal { width: min(900px, 100%); margin: auto; background: var(--surface); border: 1px solid var(--border); border-top: 4px solid var(--sprk); box-shadow: 0 20px 60px rgba(26,22,20,.24); }
+  .modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 22px 24px 18px; border-bottom: 1px solid var(--border); }
+  .modal-eyebrow { margin-bottom: 5px; color: var(--sprk); font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+  .modal-title { font-size: 22px; letter-spacing: -.4px; }
+  .modal-subtitle { max-width: 640px; margin-top: 5px; color: var(--muted); font-size: 12px; line-height: 1.45; }
+  .modal-close { flex: 0 0 auto; border: 0; background: transparent; color: var(--muted); cursor: pointer; font-size: 24px; line-height: 1; padding: 0 2px; }
+  .modal-close:hover { color: var(--sprk); }
+  .investor-form { padding: 22px 24px 24px; }
+  .modal-section { margin: 0 0 20px; padding: 0 0 18px; border-bottom: 1px solid var(--border); }
+  .modal-section:last-of-type { margin-bottom: 12px; }
+  .modal-section-title { margin: 0 0 12px; color: var(--sprk); font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+  .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 14px; }
+  .form-grid .full { grid-column: 1 / -1; }
+  .form-field { display: flex; flex-direction: column; gap: 5px; }
+  .form-field label { color: var(--muted); font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: .5px; text-transform: uppercase; }
+  .form-field input, .form-field select, .form-field textarea { width: 100%; border: 1px solid var(--border); border-radius: 5px; background: var(--bg); color: var(--text); font: inherit; font-size: 12px; padding: 8px 9px; outline: none; }
+  .form-field textarea { min-height: 72px; resize: vertical; line-height: 1.45; }
+  .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: var(--sprk); box-shadow: 0 0 0 2px rgba(200,16,46,.08); }
+  .form-check-row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; padding-top: 3px; }
+  .form-check-row label { display: flex; align-items: center; gap: 7px; color: var(--text); font-size: 12px; }
+  .modal-error { min-height: 18px; margin: 0 0 10px; color: #b42318; font-size: 12px; }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+  .modal-actions .btn-secondary { background: var(--surface); }
+  @media (max-width: 640px) { .modal-backdrop { padding: 12px; } .modal-head, .investor-form { padding-left: 16px; padding-right: 16px; } .form-grid { grid-template-columns: 1fr; } .form-grid .full { grid-column: auto; } .modal-actions { flex-direction: column-reverse; } .modal-actions .btn { width: 100%; } }
 </style>
 </head>
 <body>
@@ -401,6 +428,7 @@
       </div>
     </div>
     <div class="export-row">
+      <button class="btn btn-secondary" onclick="openInvestorModal()">+ Add Investor</button>
       <button class="btn btn-secondary" onclick="exportCSV('filtered')">↓ Export Filtered</button>
       <button class="btn" onclick="exportCSV('all')">↓ Export All 100</button>
     </div>
@@ -481,7 +509,7 @@
 </div>
 
 <div class="results-bar">
-  <div>Showing <span id="showing-count">100</span> of 100 investors · Sorted by SPRK Fit (desc)</div>
+  <div>Showing <span id="showing-count">100</span> of <span id="total-count-inline">100</span> investors · Sorted by SPRK Fit (desc)</div>
   <div style="font-size:11px;">Click column headers to sort · SPRK fit scored against: AI-native creator economy, cultural data layer, marketplace + tools platform</div>
 </div>
 
@@ -510,6 +538,49 @@
   </table>
   <div class="no-results" id="no-results" style="display:none;">
     <span>🔍</span>No investors match your filters. <a href="#" style="color:var(--sprk)" onclick="resetFilters()">Reset filters</a>
+  </div>
+</div>
+
+<div id="investor-modal" class="modal-backdrop" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-title" onclick="closeInvestorModalOnBackdrop(event)">
+  <div class="investor-modal">
+    <div class="modal-head">
+      <div>
+        <div class="modal-eyebrow">Tracker extension</div>
+        <h2 id="modal-title" class="modal-title">Add an Investor</h2>
+        <p class="modal-subtitle">This creates a new browser-local record without changing the original investor sweep. You can update its contact, outreach status, and attached email file inline after saving.</p>
+      </div>
+      <button class="modal-close" type="button" aria-label="Close add investor form" onclick="closeInvestorModal()">×</button>
+    </div>
+    <form class="investor-form" id="add-investor-form" onsubmit="saveInvestorRecord(event)">
+      <div class="modal-section">
+        <div class="modal-section-title">Firm record</div>
+        <div class="form-grid">
+          <div class="form-field full"><label for="new-firm-name">Firm name *</label><input id="new-firm-name" required maxlength="160" placeholder="e.g., Example Ventures"></div>
+          <div class="form-field"><label for="new-firm-url">Website</label><input id="new-firm-url" type="url" maxlength="240" placeholder="https://example.vc"></div>
+          <div class="form-field"><label for="new-firm-type">Type</label><select id="new-firm-type"><option value="VC">VC</option><option value="Angel">Angel</option><option value="Corp">Corporate VC</option><option value="Intl">International</option><option value="Accel">Accelerator</option></select></div>
+          <div class="form-field"><label for="new-firm-hq">HQ</label><input id="new-firm-hq" maxlength="160" placeholder="City, State / Country"></div>
+          <div class="form-field"><label for="new-firm-region">Region</label><select id="new-firm-region"><option value="US">United States</option><option value="UAE">UAE</option><option value="Saudi">Saudi Arabia</option><option value="India">India</option><option value="Asia">Asia</option><option value="Europe">Europe</option><option value="Other">Other</option></select></div>
+          <div class="form-field full"><label for="new-firm-portfolio">Notable portfolio</label><input id="new-firm-portfolio" maxlength="400" placeholder="Up to three relevant investments, separated by commas"></div>
+          <div class="form-field full"><label for="new-firm-thesis">Investment thesis</label><textarea id="new-firm-thesis" maxlength="1200" placeholder="Why this firm may be relevant to SPRK"></textarea></div>
+          <div class="form-field"><label for="new-firm-check">Average seed check</label><input id="new-firm-check" maxlength="80" placeholder="e.g., $500K–$2M"></div>
+          <div class="form-field"><label for="new-firm-fit">SPRK fit score</label><select id="new-firm-fit"><option value="5">5 — Best Fit</option><option value="4">4 — Strong Fit</option><option value="3" selected>3 — Good Fit</option><option value="2">2 — Possible</option><option value="1">1 — Stretch</option></select></div>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">Primary contact</div>
+        <div class="form-grid">
+          <div class="form-field"><label for="new-contact-name">Contact name</label><input id="new-contact-name" maxlength="160" placeholder="First and last name"></div>
+          <div class="form-field"><label for="new-contact-title">Title</label><input id="new-contact-title" maxlength="160" placeholder="Partner, Principal, etc."></div>
+          <div class="form-field"><label for="new-contact-linkedin">LinkedIn URL</label><input id="new-contact-linkedin" type="url" maxlength="240" placeholder="https://linkedin.com/in/... "></div>
+          <div class="form-field"><label for="new-contact-email">Email</label><input id="new-contact-email" type="email" maxlength="320" placeholder="name@firm.com"></div>
+          <div class="form-field full"><label for="new-contact-hook">Personal hook</label><textarea id="new-contact-hook" maxlength="1600" placeholder="A recent thesis, post, investment, or point of relevance for the opening line"></textarea></div>
+          <div class="form-field full"><label for="new-contact-file">Email file (optional)</label><input id="new-contact-file" type="file" accept=".html,.htm"></div>
+          <div class="form-check-row full"><label><input id="new-contact-verified" type="checkbox"> Address verified</label><label><input id="new-contact-sent" type="checkbox"> Email sent</label></div>
+        </div>
+      </div>
+      <div id="modal-error" class="modal-error" role="alert"></div>
+      <div class="modal-actions"><button class="btn btn-secondary" type="button" onclick="closeInvestorModal()">Cancel</button><button class="btn" type="submit">Save Investor</button></div>
+    </form>
   </div>
 </div>
 
@@ -649,15 +720,30 @@ const investors = [
   {type:"VC",name:"Slow Capital (creator focus)",url:"https://slow.co",hq:"San Francisco, CA",inv:"Patreon, Substack, Cameo",thesis:"Cameo backer showing creator marketplace conviction; Slow is the purest creator-economy seed fund outside a16z",check:"$250K–$1M",fit:5,region:"US"},
 ];
 
-// Remove duplicate (Slow Ventures appears twice)
-const seen = new Set();
-const uniqueInvestors = investors.filter(inv => {
-  const key = inv.name;
-  if (seen.has(key)) return false;
-  seen.add(key);
-  return true;
-});
-
+// Browser-local custom firms are deliberately separate from the original investor sweep.
+const customInvestorStorageKey = 'sprk_custom_investors_v1';
+function loadCustomInvestors() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(customInvestorStorageKey) || '[]');
+    return Array.isArray(saved) ? saved.filter(item => item && typeof item.name === 'string' && item.name.trim()) : [];
+  } catch (e) {
+    return [];
+  }
+}
+function persistCustomInvestors() {
+  localStorage.setItem(customInvestorStorageKey, JSON.stringify(customInvestors));
+}
+let customInvestors = loadCustomInvestors();
+function buildUniqueInvestors() {
+  const seen = new Set();
+  return [...investors, ...customInvestors.map(({contacts, ...firm}) => firm)].filter(inv => {
+    const key = inv.name;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+let uniqueInvestors = buildUniqueInvestors();
 let filtered = [...uniqueInvestors];
 let sortCol = 'fit';
 let sortDir = -1; // -1 = desc
@@ -666,6 +752,8 @@ function renderTable() {
   const tbody = document.getElementById('tbody');
   tbody.innerHTML = '';
 
+  document.getElementById('total-count').textContent = uniqueInvestors.length;
+  document.getElementById('total-count-inline').textContent = uniqueInvestors.length;
   document.getElementById('filtered-count').textContent = filtered.length;
   document.getElementById('showing-count').textContent = filtered.length;
   document.getElementById('fit5-count').textContent = uniqueInvestors.filter(i => i.fit === 5).length;
@@ -814,9 +902,9 @@ function exportCSV(mode) {
   const rows = data.map((inv, i) => [
     i + 1, inv.type, inv.name, inv.url, inv.hq, inv.region,
     `"${inv.inv}"`, `"${inv.thesis}"`, inv.check, inv.fit,
-    `"${(contactData[inv.name]||[{name:''}])[0].name}"`,
-    `"${(contactData[inv.name]||[{title:''}])[0].title||''}"`,
-    `"${lsGet(inv.name,'email',0,(contactData[inv.name]||[{email:''}])[0].email||'')}"`,
+    `"${(getAllContacts(inv.name)[0]||{name:''}).name}"`,
+    `"${(getAllContacts(inv.name)[0]||{title:''}).title||''}"`,
+    `"${lsGet(inv.name,'email',0,(getAllContacts(inv.name)[0]||{email:''}).email||'')}"`,
     lsGetBool(inv.name,'verified',0)?'Yes':'No',
     lsGetBool(inv.name,'emailSent',0)?'Yes':'No'
   ]);
@@ -1014,7 +1102,8 @@ function lsSetBool(invName, field, idx, val) {
 
 // Get all contacts for a firm: pre-populated + manually added
 function getAllContacts(invName) {
-  const base = contactData[invName] || [];
+  const customFirm = customInvestors.find(inv => inv.name === invName);
+  const base = contactData[invName] || customFirm?.contacts || [];
   // Load manually added contacts from localStorage
   const extraKey = 'sprk_extra_contacts_' + invName.replace(/[^a-z0-9]/gi,'_');
   let extras = [];
@@ -1115,6 +1204,94 @@ function buildContactRow(inv, contact, idx, isFirst, rowspan, isLast) {
   }
 
   return { nameCell, titleCell, hookCell, emailCell, verifiedCell, sentCell, fileCell };
+}
+
+function openInvestorModal() {
+  const modal = document.getElementById('investor-modal');
+  document.getElementById('modal-error').textContent = '';
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+  setTimeout(() => document.getElementById('new-firm-name').focus(), 0);
+}
+
+function closeInvestorModal() {
+  const modal = document.getElementById('investor-modal');
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden', 'true');
+  document.getElementById('add-investor-form').reset();
+  document.getElementById('modal-error').textContent = '';
+}
+
+function closeInvestorModalOnBackdrop(event) {
+  if (event.target === document.getElementById('investor-modal')) closeInvestorModal();
+}
+
+function fieldValue(id) {
+  return document.getElementById(id).value.trim();
+}
+
+function saveInvestorRecord(event) {
+  event.preventDefault();
+  const error = document.getElementById('modal-error');
+  const name = fieldValue('new-firm-name');
+  if (uniqueInvestors.some(inv => inv.name.toLowerCase() === name.toLowerCase())) {
+    error.textContent = 'That investor is already in the tracker. Use its existing row to update contacts or outreach details.';
+    return;
+  }
+
+  const website = fieldValue('new-firm-url');
+  const linkedIn = fieldValue('new-contact-linkedin');
+  if (website && !/^https?:\/\//i.test(website)) {
+    error.textContent = 'Website must begin with http:// or https://.';
+    return;
+  }
+  if (linkedIn && !/^https?:\/\//i.test(linkedIn)) {
+    error.textContent = 'LinkedIn URL must begin with http:// or https://.';
+    return;
+  }
+
+  const record = {
+    type: document.getElementById('new-firm-type').value,
+    name,
+    url: website || '#',
+    hq: fieldValue('new-firm-hq') || '—',
+    inv: fieldValue('new-firm-portfolio') || '—',
+    thesis: fieldValue('new-firm-thesis') || '—',
+    check: fieldValue('new-firm-check') || '—',
+    fit: Number(document.getElementById('new-firm-fit').value),
+    region: document.getElementById('new-firm-region').value,
+    contacts: [{
+      name: fieldValue('new-contact-name'),
+      title: fieldValue('new-contact-title'),
+      linkedin: linkedIn,
+      email: fieldValue('new-contact-email'),
+      hook: fieldValue('new-contact-hook')
+    }]
+  };
+
+  customInvestors.push(record);
+  persistCustomInvestors();
+  if (document.getElementById('new-contact-verified').checked) localStorage.setItem(lsKey(name, 'verified', 0), '1');
+  if (document.getElementById('new-contact-sent').checked) localStorage.setItem(lsKey(name, 'emailSent', 0), '1');
+
+  const finalize = () => {
+    uniqueInvestors = buildUniqueInvestors();
+    applyFilters();
+    closeInvestorModal();
+    try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({path:'/vc-tracker/add-investor/'+name,title:'Add investor: '+name,event:true}); } catch (e) {}
+  };
+  const file = document.getElementById('new-contact-file').files[0];
+  if (!file) {
+    finalize();
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = loadEvent => {
+    localStorage.setItem(lsKey(name, 'fileName', 0), file.name);
+    localStorage.setItem(lsKey(name, 'fileData', 0), loadEvent.target.result);
+    finalize();
+  };
+  reader.readAsDataURL(file);
 }
 
 // Init
