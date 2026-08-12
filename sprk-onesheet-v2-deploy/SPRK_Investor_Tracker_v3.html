@@ -208,7 +208,8 @@
   .results-bar span { color: var(--sprk); font-weight: 600; }
 
   .table-wrap {
-    overflow-x: auto;
+    overflow: auto;
+    max-height: calc(100vh - 236px);
     padding: 0 0 32px;
   }
 
@@ -351,7 +352,7 @@
   .contact-name a { color: var(--text); text-decoration: none; border-bottom: 1px dashed var(--border); transition: color 0.15s; }
   .contact-name a:hover { color: var(--sprk); border-color: var(--sprk); }
   .contact-title { font-size: 11px; color: var(--muted); margin-top: 1px; }
-  .contact-hook { font-size: 11px; color: #3a3530; margin-top: 4px; line-height: 1.4; max-width: 220px; min-width: 160px; }
+  .contact-hook { font-size: 11px; color: #3a3530; margin-top: 4px; line-height: 1.4; max-width: 440px; min-width: 340px; }
   .contact-extra { margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--border); display: none; }
   .contact-extra.open { display: block; }
   .expand-btn { background: none; border: none; cursor: pointer; font-size: 10px; color: var(--muted); padding: 0; margin-top: 4px; font-family: 'Space Mono', monospace; }
@@ -370,7 +371,7 @@
   .status-sent { background: #dcfce7; color: #14532d; border: 1px solid #6ee7b7; }
   .status-verified { background: #e0f2fe; color: #0c4a6e; border: 1px solid #7dd3fc; }
   th.tracker-col { min-width: 80px; }
-  th.hook-col { min-width: 180px; }
+  th.hook-col { min-width: 360px; width: 420px; }
   th.contact-col { min-width: 160px; }
 
   /* ── Per-contact sub-rows ── */
@@ -734,7 +735,7 @@ function renderTable() {
         <td class="fit-cell" rowspan="2" style="vertical-align:top;padding-top:12px"><span class="fit-dot fit-${inv.fit}">${inv.fit} ${'★'.repeat(inv.fit)}${'☆'.repeat(5 - inv.fit)}</span></td>
         <td style="vertical-align:top;padding-top:8px"><input class="inline-field" type="text" placeholder="Contact name…" value="${lsGet(inv.name,'cname',0,'').replace(/"/g,'&quot;')}" oninput="lsSet('${iN}','cname',0,this.value)" style="min-width:120px;font-weight:600"></td>
         <td style="vertical-align:top;padding-top:8px"><input class="inline-field" type="text" placeholder="Title…" value="${lsGet(inv.name,'ctitle',0,'').replace(/"/g,'&quot;')}" oninput="lsSet('${iN}','ctitle',0,this.value)" style="min-width:130px;color:var(--muted);font-size:11px"></td>
-        <td style="vertical-align:top;padding-top:8px"><textarea class="inline-field" placeholder="Personal hook…" oninput="lsSet('${iN}','chook',0,this.value)" style="min-width:180px;height:54px;resize:vertical;font-size:11px">${lsGet(inv.name,'chook',0,'').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea></td>
+        <td style="vertical-align:top;padding-top:8px"><textarea class="inline-field" placeholder="Personal hook…" oninput="lsSet('${iN}','chook',0,this.value)" style="min-width:360px;max-width:440px;height:54px;resize:vertical;font-size:11px">${lsGet(inv.name,'chook',0,'').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea></td>
         <td style="vertical-align:middle"><input class="inline-field" type="text" placeholder="Add email…" value="${lsGet(inv.name,'email',0,'').replace(/"/g,'&quot;')}" oninput="lsSet('${iN}','email',0,this.value)" style="min-width:150px"></td>
         <td class="check-cell-track"><input type="checkbox" class="tracker-check" ${lsGetBool(inv.name,'verified',0)?'checked':''} onchange="lsSetBool('${iN}','verified',0,this.checked)"></td>
         <td class="check-cell-track"><input type="checkbox" class="tracker-check" ${lsGetBool(inv.name,'emailSent',0)?'checked':''} onchange="lsSetBool('${iN}','emailSent',0,this.checked)"></td>
@@ -865,10 +866,10 @@ const contactData = {
     {name:'Ben Lerer',title:'Managing Partner',linkedin:'https://linkedin.com/company/lerer-hippeau',email:'',hook:'Ben co-founded Thrillist and Group Nine Media — he built a creator-first media company before the tools existed. SPRK is the infrastructure he would have wanted.'}
   ],
   'Inspired Capital': [
-    {name:'Alexa von Tobel',title:'Founding Managing Partner',linkedin:'https://linkedin.com/in/alexavontobel',email:'',hook:'Alexa backed ShopMy, which is creator commerce infrastructure — SPRK is the full-stack version: production, distribution, commerce, and AI data in one owned ecosystem.'}
+    {name:'Alexa von Tobel',title:'Founding Managing Partner',linkedin:'https://linkedin.com/in/alexavontobel',email:'hello@inspired.com',hook:'Alexa backed ShopMy, which is creator commerce infrastructure — SPRK is the full-stack version: production, distribution, commerce, and AI data in one owned ecosystem.'}
   ],
   'Union Square Ventures (USV)': [
-    {name:'Rebecca Kaden',title:'General Partner',linkedin:'https://linkedin.com/in/rebecca-kaden',email:'',hook:'Rebecca focuses on networks and platforms at USV — SPRK\'s flywheel (Studio → .COM → Pavilion → YourSPRK → SPRK*AI) is a classic USV-style network effects play where every interaction makes the moat deeper.'},
+    {name:'Rebecca Kaden',title:'General Partner',linkedin:'https://linkedin.com/in/rebecca-kaden',email:'info@usv.com',hook:'Rebecca focuses on networks and platforms at USV — SPRK\'s flywheel (Studio → .COM → Pavilion → YourSPRK → SPRK*AI) is a classic USV-style network effects play where every interaction makes the moat deeper.'},
     {name:'Michael Mignano',title:'General Partner (newest)',linkedin:'https://linkedin.com/company/union-square-ventures',email:'',hook:'Michael just joined USV and is focused on immersive entertainment and creator platforms — SPRK\'s cultural intelligence layer and creator ownership model is directly aligned with his thesis.'}
   ],
   'General Catalyst': [
@@ -884,13 +885,13 @@ const contactData = {
     {name:'David Sacks',title:'Co-Founder & General Partner',linkedin:'https://linkedin.com/in/davidsacks',email:'',hook:'David backed Agentio, the AI-powered creator ad platform — SPRK is the infrastructure layer Agentio needs to scale: a consented cultural data corpus, a creator-first ad marketplace, and a five-surface flywheel.'}
   ],
   'Night Ventures': [
-    {name:'Reed Duchscher',title:'CEO & Founder',linkedin:'https://linkedin.com/in/reedjd',email:'',hook:'Reed manages MrBeast and built Night as a next-gen creator management + venture studio — SPRK is the infrastructure play that turns every creator Night manages into a media company with owned revenue streams.'}
+    {name:'Reed Duchscher',title:'CEO & Founder',linkedin:'https://linkedin.com/in/reedjd',email:'ben@nightventures.com',hook:'Reed manages MrBeast and built Night as a next-gen creator management + venture studio — SPRK is the infrastructure play that turns every creator Night manages into a media company with owned revenue streams.'}
   ],
   'UTA Ventures': [
     {name:'Ali Berman',title:'Partner & Co-Head of Creators',linkedin:'https://linkedin.com/in/alisonbarash',email:'',hook:'Ali co-leads UTA\'s creator division — SPRK\'s Pavilion marketplace and brand-to-creator deal flow is a direct complement to UTA\'s talent relationships and a new revenue layer for their roster.'}
   ],
   'Khosla Ventures': [
-    {name:'Ethan Choi',title:'Partner',linkedin:'https://linkedin.com/in/ethanchoi',email:'',hook:'Ethan has been writing about AI-first companies and founder-first investing — SPRK\'s consented cultural data corpus is the AI infrastructure play that no competitor can legally replicate, which is the kind of durable moat Khosla looks for.'}
+    {name:'Ethan Choi',title:'Partner',linkedin:'https://linkedin.com/in/ethanchoi',email:'kv@khoslaventures.com / media@khoslaventures.com',hook:'Ethan has been writing about AI-first companies and founder-first investing — SPRK\'s consented cultural data corpus is the AI infrastructure play that no competitor can legally replicate, which is the kind of durable moat Khosla looks for.'}
   ],
   'Accel': [
     {name:'Amit Kumar',title:'Partner, Consumer & Social',linkedin:'https://linkedin.com/company/accel',email:'',hook:'Accel backed Facebook and Spotify — SPRK is the infrastructure that sits at the intersection of both: a social-native creator platform with streaming-scale revenue share and an AI data moat.'}
@@ -954,7 +955,7 @@ const contactData = {
     {name:'Jenny Lefcourt',title:'General Partner',linkedin:'https://linkedin.com/in/jennylefcourt',email:'',hook:'Jenny was an early Patreon backer at Freestyle — SPRK is the infrastructure layer that takes creator monetization from subscription-only to a full five-surface ecosystem with AI data licensing on top.'}
   ],
   'SignalFire': [
-    {name:'Josh Constine',title:'Venture Partner, Consumer',linkedin:'https://linkedin.com/in/joshconstine',email:'',hook:'Josh spent 8 years at TechCrunch covering the creator economy before joining SignalFire — he\'s been writing about creator infrastructure gaps since before SPRK existed. His pitch strategy content is directly aligned with what SPRK is building.'}
+    {name:'Josh Constine',title:'Venture Partner, Consumer',linkedin:'https://linkedin.com/in/joshconstine',email:'press@signalfire.com / partners@signalfire.com / ir@signalfire.com',hook:'Josh spent 8 years at TechCrunch covering the creator economy before joining SignalFire — he\'s been writing about creator infrastructure gaps since before SPRK existed. His pitch strategy content is directly aligned with what SPRK is building.'}
   ],
   'Redpoint Ventures': [
     {name:'Jacob Effron',title:'Managing Director',linkedin:'https://linkedin.com/in/jacobeffron',email:'',hook:'Redpoint has been investing in AI apps and consumer platforms — SPRK\'s consented cultural data corpus is the AI infrastructure play that sits upstream of every consumer AI product they\'re backing.'}
@@ -976,7 +977,7 @@ const contactData = {
     {name:'Charles Hudson',title:'Managing Partner & Founder',linkedin:'https://linkedin.com/in/chudson',email:'',hook:'Charles has been writing about solo founders and pre-seed investing — SPRK is a solo-founded, bootstrapped, default-alive company with a five-surface product demo, full proforma, and 45+ founding creators, all in 12 weeks.'}
   ],
   'Harlem Capital': [
-    {name:'Henri Pierre-Jacques',title:'Co-Founder & Managing Partner',linkedin:'https://linkedin.com/in/hpierrejacques',email:'',hook:'Henri has raised $225M+ backing diverse founders — SPRK\'s founding creator base is diverse by design, and the platform pays creators like owners, which is the economic equity play Harlem Capital was built to fund.'}
+    {name:'Henri Pierre-Jacques',title:'Co-Founder & Managing Partner',linkedin:'https://linkedin.com/in/hpierrejacques',email:'info@harlem.capital',hook:'Henri has raised $225M+ backing diverse founders — SPRK\'s founding creator base is diverse by design, and the platform pays creators like owners, which is the economic equity play Harlem Capital was built to fund.'}
   ],
   'CRV (Charles River Ventures)': [
     {name:'Reid Christian',title:'General Partner',linkedin:'https://linkedin.com/in/reidchristian',email:'',hook:'CRV backed Airtable and Dropbox — both infrastructure plays that unlocked new creator workflows. SPRK is the infrastructure that unlocks the entire creator economy: production, distribution, commerce, and AI data in one owned ecosystem.'}
@@ -985,7 +986,7 @@ const contactData = {
     {name:'Ann Miura-Ko',title:'Co-Founding Partner',linkedin:'https://linkedin.com/in/annmiurako',email:'',hook:'Ann backed Twitter and Lyft — both platforms where the network effect and creator/user ownership model was the thesis. SPRK is that thesis for the creator economy with an AI data moat built in.'}
   ],
   'Human Ventures': [
-    {name:'Heather Hartnett',title:'CEO & General Partner',linkedin:'https://linkedin.com/in/heatherhartnett',email:'',hook:'Heather focuses on human-centered consumer tech at Human Ventures — SPRK\'s creator-first model pays creators like owners and builds the cultural intelligence layer that every AI model needs, which is human-centered by design.'}
+    {name:'Heather Hartnett',title:'CEO & General Partner',linkedin:'https://linkedin.com/in/heatherhartnett',email:'human@human.vc',hook:'Heather focuses on human-centered consumer tech at Human Ventures — SPRK\'s creator-first model pays creators like owners and builds the cultural intelligence layer that every AI model needs, which is human-centered by design.'}
   ],
 };
 
@@ -1087,7 +1088,7 @@ function buildContactRow(inv, contact, idx, isFirst, rowspan, isLast) {
 
   // Hook
   const savedHook = lsGet(invName, 'chook', idx, contact.hook || '');
-  const hookCell = `<textarea class="inline-field" placeholder="Personal hook…" oninput="lsSet('${iN}','chook',${idx},this.value)" style="min-width:180px;max-width:240px;height:54px;resize:vertical;font-size:11px;line-height:1.4">${savedHook.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea>`;
+  const hookCell = `<textarea class="inline-field" placeholder="Personal hook…" oninput="lsSet('${iN}','chook',${idx},this.value)" style="min-width:360px;max-width:440px;height:54px;resize:vertical;font-size:11px;line-height:1.4">${savedHook.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea>`;
 
   // Email
   const savedEmail = lsGet(invName, 'email', idx, contact.email || '');
