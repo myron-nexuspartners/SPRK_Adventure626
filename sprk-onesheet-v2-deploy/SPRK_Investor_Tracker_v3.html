@@ -429,7 +429,7 @@
     </div>
     <div class="export-row">
       <button class="btn btn-secondary" onclick="openInvestorModal()">+ Add Investor</button>
-      <button class="btn btn-secondary" onclick="exportSharedMigration()">⇧ Move to Shared Tracker</button>
+      <button class="btn btn-secondary" onclick="moveToSharedTracker()">⇧ Move to Shared Tracker</button>
       <button class="btn btn-secondary" onclick="exportCSV('filtered')">↓ Export Filtered</button>
       <button class="btn" onclick="exportCSV('all')">↓ Export All 100</button>
     </div>
@@ -1101,7 +1101,10 @@ function lsSetBool(invName, field, idx, val) {
   try { if(window.goatcounter && window.goatcounter.count) window.goatcounter.count({path:'/vc-tracker/'+field+'/'+invName,title:field+': '+invName,event:true}); } catch(e){}
 }
 
-function exportSharedMigration() {
+function moveToSharedTracker() {
+  const sharedOrigin = 'https://sprk-vctrack-ncxtiru5.manus.space';
+  const sharedWindow = window.open(sharedOrigin + '/', 'sprk-shared-tracker');
+  if (!sharedWindow) { alert('Please allow pop-ups for this site, then try Move to Shared Tracker again.'); return; }
   const sharedField = { name:'name', title:'title', email:'email', linkedin:'linkedinUrl', hook:'personalHook', verified:'addressVerified', emailSent:'emailSent' };
   const fieldUpdates = [], extraContacts = [], attachments = [];
   getUniqueInvestors().forEach(inv => {
@@ -1122,9 +1125,21 @@ function exportSharedMigration() {
     firm:{ name:inv.name||'', website:inv.site||inv.website||'', firmType:inv.type||'VC', hq:inv.hq||'', region:inv.region||'', notablePortfolio:inv.inv||inv.investments||'', thesis:inv.thesis||'', averageSeedCheck:inv.check||'', fitScore:String(inv.fit||'') },
     primaryContact:{ name:(inv.contacts&&inv.contacts[0]&&inv.contacts[0].name)||'', title:(inv.contacts&&inv.contacts[0]&&inv.contacts[0].title)||'', email:(inv.contacts&&inv.contacts[0]&&inv.contacts[0].email)||'', linkedinUrl:(inv.contacts&&inv.contacts[0]&&inv.contacts[0].linkedin)||'', personalHook:(inv.contacts&&inv.contacts[0]&&inv.contacts[0].hook)||'' }
   }));
-  const blob = new Blob([JSON.stringify({version:2, exportedAt:new Date().toISOString(), customInvestors, extraContacts, fieldUpdates, attachments}, null, 2)], {type:'application/json'});
-  const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'sprk-shared-tracker-migration-' + new Date().toISOString().slice(0,10) + '.json'; link.click(); URL.revokeObjectURL(link.href);
-  alert('Migration snapshot downloaded. Import it into the shared tracker. ' + (attachments.length ? attachments.length + ' local HTML email attachment(s) are included for shared storage migration.' : ''));
+  const payload = {version:2, exportedAt:new Date().toISOString(), customInvestors, extraContacts, fieldUpdates, attachments};
+  let sent = false;
+  let attempts = 0;
+  let retry = null;
+  const sendSnapshot = function() {
+    if (sent) return;
+    sharedWindow.postMessage({ type:'SPRK_TRACKER_SNAPSHOT', payload }, sharedOrigin);
+    attempts++;
+    if (attempts >= 12) { clearInterval(retry); window.removeEventListener('message', receiveReady); }
+  };
+  const receiveReady = function(event) {
+    if (event.origin === sharedOrigin && event.data && event.data.type === 'SPRK_SHARED_TRACKER_READY') { sendSnapshot(); sent = true; clearInterval(retry); window.removeEventListener('message', receiveReady); }
+  };
+  window.addEventListener('message', receiveReady);
+  retry = setInterval(sendSnapshot, 500);
 }
 
 // Get all contacts for a firm: pre-populated + manually added
