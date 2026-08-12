@@ -49,11 +49,9 @@
   }
   .topbar-brand .mark {
     width: 30px; height: 30px;
-    background: var(--grad);
     border-radius: 8px;
-    display: grid;
-    place-items: center;
-    font-size: 16px;
+    display: block;
+    object-fit: contain;
   }
   .topbar-brand sup { color: var(--ember); font-size: .75em; }
   .topbar-label {
@@ -64,6 +62,7 @@
     color: rgba(255,255,255,.5);
   }
   .topbar-actions { display: flex; gap: 10px; align-items: center; }
+  .topbar-actions a.btn { text-decoration: none; }
   .btn {
     display: inline-flex;
     align-items: center;
@@ -292,11 +291,12 @@
 <!-- Top bar -->
 <div class="topbar">
   <div class="topbar-brand">
-    <div class="mark">✳</div>
+    <img class="mark" src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663453126583/ZoGoIJDZQWLkYAFM.png" alt="SPRK" />
     SPRK<sup>*</sup>
     <span class="topbar-label">Email Editor</span>
   </div>
   <div class="topbar-actions">
+    <a class="btn btn-ghost-light" href="https://sprk-vctrack-ncxtiru5.manus.space/" target="_blank" rel="noreferrer">↗ Investor Tracker</a>
     <button class="btn btn-ghost-light" onclick="resetFields()">↺ Reset</button>
     <button class="btn btn-secondary" onclick="exportPlainText()">⬇ Download .txt</button>
     <button class="btn btn-primary" onclick="exportEmail()">⬇ Download .html</button>
