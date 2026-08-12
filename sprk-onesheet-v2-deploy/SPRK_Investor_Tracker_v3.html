@@ -1103,8 +1103,7 @@ function lsSetBool(invName, field, idx, val) {
 
 function exportSharedMigration() {
   const sharedField = { name:'name', title:'title', email:'email', linkedin:'linkedinUrl', hook:'personalHook', verified:'addressVerified', emailSent:'emailSent' };
-  const fieldUpdates = [], extraContacts = [];
-  let omittedLocalFiles = 0;
+  const fieldUpdates = [], extraContacts = [], attachments = [];
   getUniqueInvestors().forEach(inv => {
     getAllContacts(inv.name).forEach((contact, idx) => {
       Object.entries(sharedField).forEach(([localField, field]) => {
@@ -1112,7 +1111,8 @@ function exportSharedMigration() {
         if (stored === null) return;
         fieldUpdates.push({ firmName:inv.name, contactIndex:idx, field, value:(localField === 'verified' || localField === 'emailSent') ? stored === '1' : stored });
       });
-      if (localStorage.getItem(lsKey(inv.name, 'fileData', idx))) omittedLocalFiles++;
+      const fileData = localStorage.getItem(lsKey(inv.name, 'fileData', idx));
+      if (fileData) attachments.push({ firmName:inv.name, contactIndex:idx, fileName:localStorage.getItem(lsKey(inv.name, 'fileName', idx)) || 'outreach-email.html', fileData });
     });
     const extraKey = 'sprk_extra_contacts_' + inv.name.replace(/[^a-z0-9]/gi,'_');
     let extras = []; try { extras = JSON.parse(localStorage.getItem(extraKey) || '[]'); } catch(e){}
@@ -1122,9 +1122,9 @@ function exportSharedMigration() {
     firm:{ name:inv.name||'', website:inv.site||inv.website||'', firmType:inv.type||'VC', hq:inv.hq||'', region:inv.region||'', notablePortfolio:inv.inv||inv.investments||'', thesis:inv.thesis||'', averageSeedCheck:inv.check||'', fitScore:String(inv.fit||'') },
     primaryContact:{ name:(inv.contacts&&inv.contacts[0]&&inv.contacts[0].name)||'', title:(inv.contacts&&inv.contacts[0]&&inv.contacts[0].title)||'', email:(inv.contacts&&inv.contacts[0]&&inv.contacts[0].email)||'', linkedinUrl:(inv.contacts&&inv.contacts[0]&&inv.contacts[0].linkedin)||'', personalHook:(inv.contacts&&inv.contacts[0]&&inv.contacts[0].hook)||'' }
   }));
-  const blob = new Blob([JSON.stringify({version:1, exportedAt:new Date().toISOString(), customInvestors, extraContacts, fieldUpdates, omittedLocalFiles}, null, 2)], {type:'application/json'});
+  const blob = new Blob([JSON.stringify({version:2, exportedAt:new Date().toISOString(), customInvestors, extraContacts, fieldUpdates, attachments}, null, 2)], {type:'application/json'});
   const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'sprk-shared-tracker-migration-' + new Date().toISOString().slice(0,10) + '.json'; link.click(); URL.revokeObjectURL(link.href);
-  alert('Migration snapshot downloaded. Import it into the shared tracker.' + (omittedLocalFiles ? ' ' + omittedLocalFiles + ' local file attachment(s) must be re-uploaded.' : ''));
+  alert('Migration snapshot downloaded. Import it into the shared tracker. ' + (attachments.length ? attachments.length + ' local HTML email attachment(s) are included for shared storage migration.' : ''));
 }
 
 // Get all contacts for a firm: pre-populated + manually added
