@@ -1105,7 +1105,7 @@ function moveToSharedTracker() {
   const sharedOrigin = 'https://sprk-vctrack-ncxtiru5.manus.space';
   const sharedField = { name:'name', title:'title', email:'email', linkedin:'linkedinUrl', hook:'personalHook', verified:'addressVerified', emailSent:'emailSent' };
   const fieldUpdates = [], extraContacts = [], attachments = [];
-  getUniqueInvestors().forEach(inv => {
+  uniqueInvestors.forEach(inv => {
     getAllContacts(inv.name).forEach((contact, idx) => {
       Object.entries(sharedField).forEach(([localField, field]) => {
         const stored = localStorage.getItem(lsKey(inv.name, localField, idx));
