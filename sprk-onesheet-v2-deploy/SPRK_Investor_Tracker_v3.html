@@ -1119,11 +1119,11 @@ function moveToSharedTracker() {
     let extras = []; try { extras = JSON.parse(localStorage.getItem(extraKey) || '[]'); } catch(e){}
     if (extras.length) extraContacts.push({ firmName:inv.name, contacts:extras.map(c => ({ name:c.name||'', title:c.title||'', email:c.email||'', linkedinUrl:c.linkedin||'', personalHook:c.hook||'' })) });
   });
-  const customInvestors = (customInvestors || []).map(inv => ({
+  const snapshotCustomInvestors = (customInvestors || []).map(inv => ({
     firm:{ name:inv.name||'', website:inv.site||inv.website||'', firmType:inv.type||'VC', hq:inv.hq||'', region:inv.region||'', notablePortfolio:inv.inv||inv.investments||'', thesis:inv.thesis||'', averageSeedCheck:inv.check||'', fitScore:String(inv.fit||'') },
     primaryContact:{ name:(inv.contacts&&inv.contacts[0]&&inv.contacts[0].name)||'', title:(inv.contacts&&inv.contacts[0]&&inv.contacts[0].title)||'', email:(inv.contacts&&inv.contacts[0]&&inv.contacts[0].email)||'', linkedinUrl:(inv.contacts&&inv.contacts[0]&&inv.contacts[0].linkedin)||'', personalHook:(inv.contacts&&inv.contacts[0]&&inv.contacts[0].hook)||'' }
   }));
-  const payload = {version:2, exportedAt:new Date().toISOString(), customInvestors, extraContacts, fieldUpdates, attachments};
+  const payload = {version:2, exportedAt:new Date().toISOString(), customInvestors:snapshotCustomInvestors, extraContacts, fieldUpdates, attachments};
   const transfer = 'SPRK_TRACKER_HANDOFF:' + JSON.stringify(payload);
   if (transfer.length > 1900000) { alert('Your local migration snapshot is too large for one-click transfer. Use Export All 100 to preserve the data, then contact the team for assisted migration.'); return; }
   window.name = transfer;
