@@ -1103,8 +1103,6 @@ function lsSetBool(invName, field, idx, val) {
 
 function moveToSharedTracker() {
   const sharedOrigin = 'https://sprk-vctrack-ncxtiru5.manus.space';
-  const sharedWindow = window.open(sharedOrigin + '/', 'sprk-shared-tracker');
-  if (!sharedWindow) { alert('Please allow pop-ups for this site, then try Move to Shared Tracker again.'); return; }
   const sharedField = { name:'name', title:'title', email:'email', linkedin:'linkedinUrl', hook:'personalHook', verified:'addressVerified', emailSent:'emailSent' };
   const fieldUpdates = [], extraContacts = [], attachments = [];
   getUniqueInvestors().forEach(inv => {
@@ -1126,20 +1124,10 @@ function moveToSharedTracker() {
     primaryContact:{ name:(inv.contacts&&inv.contacts[0]&&inv.contacts[0].name)||'', title:(inv.contacts&&inv.contacts[0]&&inv.contacts[0].title)||'', email:(inv.contacts&&inv.contacts[0]&&inv.contacts[0].email)||'', linkedinUrl:(inv.contacts&&inv.contacts[0]&&inv.contacts[0].linkedin)||'', personalHook:(inv.contacts&&inv.contacts[0]&&inv.contacts[0].hook)||'' }
   }));
   const payload = {version:2, exportedAt:new Date().toISOString(), customInvestors, extraContacts, fieldUpdates, attachments};
-  let sent = false;
-  let attempts = 0;
-  let retry = null;
-  const sendSnapshot = function() {
-    if (sent) return;
-    sharedWindow.postMessage({ type:'SPRK_TRACKER_SNAPSHOT', payload }, sharedOrigin);
-    attempts++;
-    if (attempts >= 12) { clearInterval(retry); window.removeEventListener('message', receiveReady); }
-  };
-  const receiveReady = function(event) {
-    if (event.origin === sharedOrigin && event.data && event.data.type === 'SPRK_SHARED_TRACKER_READY') { sendSnapshot(); sent = true; clearInterval(retry); window.removeEventListener('message', receiveReady); }
-  };
-  window.addEventListener('message', receiveReady);
-  retry = setInterval(sendSnapshot, 500);
+  const transfer = 'SPRK_TRACKER_HANDOFF:' + JSON.stringify(payload);
+  if (transfer.length > 1900000) { alert('Your local migration snapshot is too large for one-click transfer. Use Export All 100 to preserve the data, then contact the team for assisted migration.'); return; }
+  window.name = transfer;
+  window.location.assign(sharedOrigin + '/?migration=ready');
 }
 
 // Get all contacts for a firm: pre-populated + manually added
