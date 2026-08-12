@@ -529,9 +529,9 @@
         <th class="contact-col tracker-col">Contact Name</th>
         <th class="tracker-col">Title</th>
         <th class="hook-col tracker-col">Personal Hook</th>
-        <th class="tracker-col">Email</th>
-        <th class="tracker-col" style="text-align:center">Verified</th>
-        <th class="tracker-col" style="text-align:center">Sent</th>
+        <th class="tracker-col" data-sort="email" onclick="sortBy('email')">Email <span class="sort-arrow">↕</span></th>
+        <th class="tracker-col" data-sort="verified" onclick="sortBy('verified')" style="text-align:center">Verified <span class="sort-arrow">↕</span></th>
+        <th class="tracker-col" data-sort="sent" onclick="sortBy('sent')" style="text-align:center">Sent <span class="sort-arrow">↕</span></th>
         <th class="tracker-col file-col">File</th>
       </tr>
     </thead>
@@ -752,6 +752,7 @@ let sortDir = -1; // -1 = desc
 function renderTable() {
   const tbody = document.getElementById('tbody');
   tbody.innerHTML = '';
+  updateSortIndicators();
 
   document.getElementById('total-count').textContent = uniqueInvestors.length;
   document.getElementById('total-count-inline').textContent = uniqueInvestors.length;
@@ -871,7 +872,7 @@ function sortBy(col) {
     sortDir *= -1;
   } else {
     sortCol = col;
-    sortDir = col === 'fit' ? -1 : 1;
+    sortDir = ['fit', 'verified', 'sent'].includes(col) ? -1 : 1;
   }
   doSort();
   renderTable();
@@ -879,12 +880,37 @@ function sortBy(col) {
 
 function doSort() {
   filtered.sort((a, b) => {
-    let va = a[sortCol], vb = b[sortCol];
+    let va = getSortValue(a, sortCol), vb = getSortValue(b, sortCol);
+    if (sortCol === 'email') {
+      if (!va && vb) return 1;
+      if (va && !vb) return -1;
+    }
     if (typeof va === 'string') va = va.toLowerCase();
     if (typeof vb === 'string') vb = vb.toLowerCase();
     if (va < vb) return -sortDir;
     if (va > vb) return sortDir;
     return 0;
+  });
+}
+
+function getSortValue(inv, col) {
+  if (col === 'email') {
+    return getAllContacts(inv.name)
+      .map((contact, idx) => lsGet(inv.name, 'email', idx, contact.email || '').trim())
+      .filter(Boolean)
+      .sort()[0] || '';
+  }
+  if (col === 'verified') return getAllContacts(inv.name).some((contact, idx) => lsGetBool(inv.name, 'verified', idx)) ? 1 : 0;
+  if (col === 'sent') return getAllContacts(inv.name).some((contact, idx) => lsGetBool(inv.name, 'emailSent', idx)) ? 1 : 0;
+  return inv[col];
+}
+
+function updateSortIndicators() {
+  document.querySelectorAll('th[data-sort]').forEach(header => {
+    const active = header.dataset.sort === sortCol;
+    header.classList.toggle('sorted', active);
+    const arrow = header.querySelector('.sort-arrow');
+    if (arrow) arrow.textContent = active ? (sortDir === 1 ? '↑' : '↓') : '↕';
   });
 }
 
