@@ -1,0 +1,9 @@
+# Legacy investor-site address migration
+# Applies only to the former Netlify host and preserves any path after the host.
+# The destination is the approved primary investor address.
+
+[[redirects]]
+  from = "https://sprk-adventure2026.netlify.app/*"
+  to = "https://invest.yoursprk.com/:splat"
+  status = 301
+  force = true
