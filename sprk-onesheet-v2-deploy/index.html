@@ -83,6 +83,8 @@ nav{position:sticky;top:0;z-index:50;background:rgba(245,240,235,.92);backdrop-f
   nav.open .menu-btn span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 }
 
+/* DESIGN REMINDER — Preserve the existing investor editorial monitor composition.
+   The approved Welcome to SPRK* still replaces home-page video playback only. */
 /* ========== CINEMATIC HERO ========== */
 /*
   Layout: full-viewport hero.
@@ -90,7 +92,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(245,240,235,.92);backdrop-f
   The monitor screen in the image occupies roughly the top 55% of the frame.
   All copy (logo, headline, subhead, CTAs) lives in the bottom ~38% of the
   viewport, overlaid on a dark gradient — always fully above the fold.
-  The video overlay is positioned by JS to land exactly on the screen in the image.
+  The static monitor preview is positioned by JS to land exactly on the screen in the image.
   Scroll hint sits at the very bottom of the hero.
 */
 .hero-cinematic{
@@ -126,7 +128,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(245,240,235,.92);backdrop-f
   );
   z-index:1;
 }
-/* Video screen overlay — positioned by JS */
+/* Static monitor preview — positioned by JS */
 .hero-screen-overlay{
   position:absolute;
   z-index:2;
@@ -137,10 +139,11 @@ nav{position:sticky;top:0;z-index:50;background:rgba(245,240,235,.92);backdrop-f
   pointer-events:none;
 }
 .hero-screen-overlay.ready{ opacity:1; }
-.hero-screen-overlay video{
+.hero-screen-overlay img{
   width:100%;
   height:100%;
   object-fit:cover;
+  object-position:top;
   display:block;
   filter:brightness(0.90) contrast(1.05);
 }
@@ -608,11 +611,9 @@ footer{padding:42px 0 54px;border-top:1px solid rgba(10,10,15,.08)}
   <img class="hero-bg" id="heroBg" src="assets/studio-hero-bg.jpg" alt="Professional podcast studio with acoustic panels and dual microphone setup" />
   <div class="hero-bg-overlay" aria-hidden="true"></div>
 
-  <!-- Video overlay — positioned by JS over the monitor screen -->
+  <!-- Approved static Welcome to SPRK* preview — positioned by the original monitor geometry -->
   <div class="hero-screen-overlay" id="heroScreenOverlay">
-    <video id="heroVid" autoplay muted loop playsinline preload="auto" poster="assets/hero-poster.jpg">
-      <source src="assets/SPRK_YC_Demo_final.mp4" type="video/mp4" />
-    </video>
+    <img src="assets/sprk-home-feed-monitor.png" alt="Welcome to SPRK* creator-first attention ecosystem" />
   </div>
 
   <!-- Copy zone (grid row 2) — always fully visible above fold -->
@@ -947,13 +948,6 @@ footer{padding:42px 0 54px;border-top:1px solid rgba(10,10,15,.08)}
   var heroBg=document.getElementById('heroBg');
   if(heroBg){if(heroBg.complete){positionScreenOverlay();}else{heroBg.addEventListener('load',positionScreenOverlay);}}
   window.addEventListener('resize',positionScreenOverlay);
-  // Hero video autoplay
-  var hv=document.getElementById('heroVid');
-  if(hv){
-    var tryPlay=function(){hv.play().catch(function(){});};
-    tryPlay();
-    document.addEventListener('click',tryPlay,{once:true});
-  }
 })();
 </script>
 </body>
